@@ -13,6 +13,9 @@
 		<ClCompile Include="src\ofApp.cpp">
 			<Filter>src</Filter>
 		</ClCompile>
+		<ClCompile Include="src\renderer.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
 		<ClCompile Include="..\openFrameworks\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxBaseGui.cpp">
 			<Filter>addons\ofxGui\src</Filter>
 		</ClCompile>
@@ -63,6 +66,9 @@
 			<Filter>src</Filter>
 		</ClInclude>
 		<ClInclude Include="src\ofApp.h">
+			<Filter>src</Filter>
+		</ClInclude>
+		<ClInclude Include="src\renderer.h">
 			<Filter>src</Filter>
 		</ClInclude>
 		<ClInclude Include="..\openFrameworks\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxBaseGui.h">
