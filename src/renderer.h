@@ -15,5 +15,7 @@ public:
 	void drawCursor();
 
 	void asgCoordinates(int p_x, int p_y);
+	
+	void essai();
 
 };
