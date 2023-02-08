@@ -1,7 +1,9 @@
 #include "ofApp.h"
+#include "renderer.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	renderer.setup();
 	//test rapide ben
 }
 
@@ -12,7 +14,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+	renderer.draw();
 }
 
 //--------------------------------------------------------------
@@ -27,12 +29,12 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-
+	renderer.asgCoordinates(x, y);
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
+	renderer.asgCoordinates(x, y);
 }
 
 //--------------------------------------------------------------
@@ -47,7 +49,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseEntered(int x, int y){
-
+	renderer.asgCoordinates(x, y);
 }
 
 //--------------------------------------------------------------
