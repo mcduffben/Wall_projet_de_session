@@ -9,9 +9,28 @@ class ofApp : public ofBaseApp{
 		
 		Renderer renderer;
 
+		string menu;
+
+		ofxPanel guiPrincipal;
+		ofxButton boutonJeu;
+		ofxButton boutonConception;
+		ofxButton boutonOptions;
+
+		ofxPanel guiJeu;
+		ofxButton boutonExitJeu;
+
+		ofxPanel guiConception;
+		ofxButton boutonExitConception;
+
+		ofxPanel guiOptions;
+		ofxButton boutonExitOptions;
+
 		void setup();
+		void setupUi();
 		void update();
 		void draw();
+
+		void drawUi();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -24,5 +43,10 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+
+		void button_pressed_jeu();
+		void button_pressed_conception();
+		void button_pressed_options();
+		void button_pressed_exit();
 		
 };

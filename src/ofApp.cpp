@@ -4,7 +4,51 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	renderer.setup();
-	//test rapide ben
+
+	//Setup du UI
+	setupUi();
+
+	//Nom du menu
+	menu = "principal";
+}
+
+void ofApp::setupUi() {
+	//Setup du UI du menu principal
+	guiPrincipal.setup("Menu Principal");
+	
+	boutonJeu.setup("Jouer");
+	boutonJeu.addListener(this, &ofApp::button_pressed_jeu);
+	guiPrincipal.add(&boutonJeu);
+
+	boutonConception.setup("Conception");
+	boutonConception.addListener(this, &ofApp::button_pressed_conception);
+	guiPrincipal.add(&boutonConception);
+	
+	boutonOptions.setup("Options");
+	boutonOptions.addListener(this, &ofApp::button_pressed_options);
+	guiPrincipal.add(&boutonOptions);
+
+	//Setup du UI Jeu
+	guiJeu.setup("Jouer");
+
+	boutonExitJeu.setup("Retour");
+	boutonExitJeu.addListener(this, &ofApp::button_pressed_exit);
+	guiJeu.add(&boutonExitJeu);
+
+	//Setup du UI Conception
+	guiConception.setup("Conception");
+
+	boutonExitConception.setup("Retour");
+	boutonExitConception.addListener(this, &ofApp::button_pressed_exit);
+	guiConception.add(&boutonExitConception);
+
+	//Setup du UI Options
+	guiOptions.setup("Options");
+
+	boutonExitOptions.setup("Retour");
+	boutonExitOptions.addListener(this, &ofApp::button_pressed_exit);
+	guiOptions.add(&boutonExitOptions);
+
 }
 
 //--------------------------------------------------------------
@@ -15,6 +59,26 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	renderer.draw();
+	drawUi();
+	
+	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+	renderer.drawCursor();
+}
+
+//Le UI est dessiné, selon le menu désiré
+void ofApp::drawUi() {
+	if (menu == "principal") {
+		guiPrincipal.draw();
+	}
+	else if (menu == "jeu") {
+		guiJeu.draw();
+	}
+	else if (menu == "conception") {
+		guiConception.draw();
+	}
+	else if (menu == "options") {
+		guiOptions.draw();
+	}
 }
 
 //--------------------------------------------------------------
@@ -70,4 +134,28 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+
+//Bouton Jouer
+void ofApp::button_pressed_jeu() 
+{
+	menu = "jeu";
+}
+
+//Bouton Conception
+void ofApp::button_pressed_conception()
+{
+	menu = "conception";
+}
+
+//Bouton Options
+void ofApp::button_pressed_options()
+{
+	menu = "options";
+}
+
+//Bouton Exit
+void ofApp::button_pressed_exit()
+{
+	menu = "principal";
 }
