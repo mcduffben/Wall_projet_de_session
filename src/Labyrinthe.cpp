@@ -82,8 +82,8 @@ bool Labyrinthe::selectCheckerSingle(int x, int y) {
 	for (int i = 0; i < murs2Dbasique.size(); i++) {
 		if ((murs2Dbasique[i].pfinal.x - murs2Dbasique[i].pinit.x) < jeu_arbitraire && (murs2Dbasique[i].pfinal.x - murs2Dbasique[i].pinit.x) > -jeu_arbitraire) {
 			if (murs2Dbasique[i].pfinal.y > murs2Dbasique[i].pinit.y) {
-				if (x < (murs2Dbasique[i].pfinal.x + jeu_arbitraire) && x > (murs2Dbasique[i].pfinal.x - jeu_arbitraire) && y < murs2Dbasique[i].pinit.y
-					&& y>murs2Dbasique[i].pfinal.y) {
+				if (x < (murs2Dbasique[i].pfinal.x + jeu_arbitraire) && x > (murs2Dbasique[i].pfinal.x - jeu_arbitraire) && y > murs2Dbasique[i].pinit.y
+					&& y<murs2Dbasique[i].pfinal.y) {
 					murs2Dbasique[i].selected = true;
 					return true;
 				}
