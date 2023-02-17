@@ -7,7 +7,6 @@ class Renderer
 {
 public:
 	void setup();
-
 	void draw();
 	void drawCursor();
 };
