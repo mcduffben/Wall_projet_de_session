@@ -41,6 +41,11 @@ void ofApp::setupUi() {
 	boutonExitConception.setup("Retour");
 	boutonExitConception.addListener(this, &ofApp::button_pressed_exit);
 	guiConception.add(&boutonExitConception);
+	//add des option UI
+	guiConception.add(murSize.setup("size", 3, 1, 8));
+	guiConception.add(murColor.setup("color", ofColor(255, 255, 255, 255), ofColor(0, 0, 0, 0), ofColor(255, 255, 255, 255)));
+	guiConception.add(solBackground.setup("background", ofVec3f(0, 0, 0), ofVec3f(0, 0, 0), ofVec3f(255, 255, 255)));
+	guiConception.add(btnClear.setup("clear"));
 
 	//Setup du UI Options
 	guiOptions.setup("Options");
@@ -61,11 +66,12 @@ void ofApp::draw(){
 	renderer.draw();
 	drawUi();
 	
-	//Le curseur est dessinÈ ‡ la fin pour qu'il soit devant le UI
+	//Le curseur est dessinÅEÅEla fin pour qu'il soit devant le UI
 	renderer.drawCursor();
 }
 
-//Le UI est dessinÈ, selon le menu dÈsirÈ
+
+//Le UI est dessinÅE selon le menu dÈsirÅE
 void ofApp::drawUi() {
 	if (menu == "principal") {
 		guiPrincipal.draw();
@@ -99,11 +105,12 @@ void ofApp::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
 
+	renderer.drawApercu(x, y,murSize,murColor);
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+	renderer.firstP = ofPoint(x, y,);
 }
 
 //--------------------------------------------------------------

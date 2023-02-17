@@ -25,6 +25,11 @@ class ofApp : public ofBaseApp{
 		ofxPanel guiOptions;
 		ofxButton boutonExitOptions;
 
+		ofxIntSlider murSize;
+		ofxColorSlider murColor;
+		ofxVec3Slider solBackground;
+		ofxButton btnClear;
+
 		void setup();
 		void setupUi();
 		void update();
