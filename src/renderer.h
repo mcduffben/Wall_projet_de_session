@@ -18,15 +18,18 @@ public:
     ofImage imgScreenshot;
     int count;
     ofVec3f firstP;
+    ofVec3f lastPoint;
     ofFbo fbo;
     int width = 800;
     int height = 600;
     ~Renderer();
 
-    void drawApercu(int x, int y,float epaiseur,COLOR16 Color);
-
+    void drawApercu(int x, int y,float epaiseur);
+    void reset();
     ofxButton btnClear;
     ofPolyline polyline;
-
+    
     void drawLine(int x, int y);
+
+ 
 };

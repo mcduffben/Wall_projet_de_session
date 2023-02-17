@@ -65,7 +65,7 @@ void ofApp::update(){
 void ofApp::draw(){
 	renderer.draw();
 	drawUi();
-	
+	renderer.reset();
 	//Le curseur est dessinÅEÅEla fin pour qu'il soit devant le UI
 	renderer.drawCursor();
 }
@@ -103,14 +103,13 @@ void ofApp::mouseMoved(int x, int y ){
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
-	renderer.drawApercu(x, y,murSize,murColor);
+void ofApp::mouseDragged(int x, int y, int button) {
+	renderer.drawApercu(x, y, murSize);
+	
 }
-
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	renderer.firstP = ofPoint(x, y,);
+	renderer.firstP = ofPoint(x, y);
 }
 
 //--------------------------------------------------------------

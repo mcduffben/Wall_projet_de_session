@@ -34,7 +34,7 @@ class ofApp : public ofBaseApp{
 		void setupUi();
 		void update();
 		void draw();
-
+	
 		void drawUi();
 
 		void keyPressed(int key);
