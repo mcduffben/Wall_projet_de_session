@@ -8,5 +8,5 @@ class Renderer
 public:
 	void setup();
 	void draw();
-	void drawCursor();
+	void drawCursor(int curseur);
 };

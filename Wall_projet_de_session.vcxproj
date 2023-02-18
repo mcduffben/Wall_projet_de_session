@@ -182,6 +182,8 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="src\Labyrinthe.cpp" />
+    <ClCompile Include="src\LineDTO.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="..\..\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
     <ClCompile Include="..\..\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.cpp" />
@@ -200,6 +202,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="src\Labyrinthe.h" />
+    <ClInclude Include="src\LineDTO.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="..\..\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
     <ClInclude Include="..\..\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.h" />

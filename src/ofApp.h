@@ -11,7 +11,9 @@ class ofApp : public ofBaseApp{
 		Renderer renderer;
 		Labyrinthe labyrinthe;
 
-		string menu;
+		int menu;
+		vector<int> listeCurseurs;
+		
 		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing;
 		int newLineNumber, xLength, yLength;
 

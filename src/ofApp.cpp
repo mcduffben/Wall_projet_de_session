@@ -9,8 +9,11 @@ void ofApp::setup(){
 	//Setup du UI
 	setupUi();
 
-	//Nom du menu
-	menu = "principal";
+	//Menu : 0 = menu principal, 1 = jeu, 2 = conception, 3 = options, 
+	// 4 = mur basique (Conception), 5 = mur basique par param, 6 = mur basique dessin, 7 = édition 2D
+	menu = 0;
+	//La liste des curseurs pour chaque menu
+	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5 };
 
 	//Setup de variables
 	freeDraw,wantsToSelect,hasSelectedSmthing = false;
@@ -51,7 +54,7 @@ void ofApp::setupUi() {
 
 	//Setup du UI Conception Mur basique
 	guiConceptionMurBasique.setup("Conception de murs basiques");
-	guiConceptionMurBasique.setSize(300,100);
+	guiConceptionMurBasique.setSize(300, 100);
 	guiConceptionMurBasique.add(boutonByParameters.setup("Creation Par Coordonnees"));
 	guiConceptionMurBasique.add(boutonDessinLibre.setup("Creation Par Dessin Libre"));
 	guiConceptionMurBasique.add(boutonRetourConceptionMur.setup("Retour"));
@@ -62,7 +65,7 @@ void ofApp::setupUi() {
 	//Setup du UI Conception Mur basique par paramètre
 	guiCreationMurByParameters.setup("Conception de murs par parametres");
 	guiCreationMurByParameters.add(newLine.setup("Ajouter un nouveau mur"));
-	guiCreationMurByParameters.add(posLine.setup("Deplacer",{ ofGetWidth() * .5, ofGetHeight() * .5 }, { 0, 0 }, { ofGetWidth(), ofGetHeight() }));
+	guiCreationMurByParameters.add(posLine.setup("Deplacer", { ofGetWidth() * .5, ofGetHeight() * .5 }, { 0, 0 }, { ofGetWidth(), ofGetHeight() }));
 	guiCreationMurByParameters.add(lengthLine.setup("Longueur", 100, 20, 1000));
 	guiCreationMurByParameters.add(orientationLine.setup("Changer orientation"));
 	guiCreationMurByParameters.add(saveNew2dWall.setup("Sauvegarder"));
@@ -71,7 +74,7 @@ void ofApp::setupUi() {
 	orientationLine.addListener(this, &ofApp::button_pressed_orientationLine);
 	saveNew2dWall.addListener(this, &ofApp::button_pressed_saveNewLine2d);
 	exitCreationByParameters.addListener(this, &ofApp::button_pressed_exitCreationByParameters);
-	guiCreationMurByParameters.setSize(350,100);
+	guiCreationMurByParameters.setSize(350, 100);
 	xLength = lengthLine;
 	yLength = 0;
 
@@ -93,12 +96,12 @@ void ofApp::setupUi() {
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update() {
 	labyrinthe.update();
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::draw() {
 	renderer.draw();
 
 	labyrinthe.draw();
@@ -116,66 +119,66 @@ void ofApp::draw(){
 			yLength = lengthLine;
 		}
 		ofSetColor(0, 0, 175);
-		ofDrawLine({ posLine->x - xLength, posLine->y - yLength}, { posLine->x + xLength, posLine->y + yLength});		
+		ofDrawLine({ posLine->x - xLength, posLine->y - yLength }, { posLine->x + xLength, posLine->y + yLength });
 	}
 	ofSetColor(255, 255, 255);
 	//fin de la fonction
 
-	
+
 	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
-	renderer.drawCursor();
+	renderer.drawCursor(listeCurseurs[menu]);
 }
 
 //Le UI est dessiné, selon le menu désiré
 void ofApp::drawUi() {
-	if (menu == "principal") {
+	if (menu == 0) {
 		guiPrincipal.draw();
 	}
-	else if (menu == "jeu") {
+	else if (menu == 1) {
 		guiJeu.draw();
 	}
-	else if (menu == "conception") {
+	else if (menu == 2) {
 		guiConception.draw();
 	}
-	else if (menu == "options") {
+	else if (menu == 3) {
 		guiOptions.draw();
 	}
-	else if (menu == "Conception Mur Basique") {
+	else if (menu == 4) {
 		guiConceptionMurBasique.draw();
 	}
-	else if (menu == "Creation2d") {
+	else if (menu == 5) {
 		guiCreationMurByParameters.draw();
 	}
-	else if (menu == "free draw") {
+	else if (menu == 6) {
 		guiCreationDessinLibre.draw();
 	}
-	else if (menu == "Edition2d") {
+	else if (menu == 7) {
 		guiEdition2d.draw();
 	}
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
+void ofApp::keyPressed(int key) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
+void ofApp::keyReleased(int key) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
+void ofApp::mouseMoved(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
+void ofApp::mouseDragged(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
+void ofApp::mousePressed(int x, int y, int button) {
 	if (freeDraw) {
 		labyrinthe.setNewLineX(x);
 		labyrinthe.setNewLineY(y);
@@ -186,80 +189,80 @@ void ofApp::mousePressed(int x, int y, int button){
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
+void ofApp::mouseReleased(int x, int y, int button) {
 	if (freeDraw) {
 		labyrinthe.addNewLine(x, y);
 	}
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-	
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
+void ofApp::mouseEntered(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
+void ofApp::mouseExited(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
+void ofApp::windowResized(int w, int h) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::gotMessage(ofMessage msg) {
+
+}
+
+//--------------------------------------------------------------
+void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 }
 
 //Bouton Jouer
-void ofApp::button_pressed_jeu() 
+void ofApp::button_pressed_jeu()
 {
-	menu = "jeu";
+	menu = 1;
 }
 
 //Bouton Conception
 void ofApp::button_pressed_conception()
 {
-	menu = "conception";
+	menu = 2;
 }
 
 //Bouton Options
 void ofApp::button_pressed_options()
 {
-	menu = "options";
+	menu = 3;
 }
 
 //Bouton Exit
 void ofApp::button_pressed_exit()
 {
-	menu = "principal";
+	menu = 0;
 }
 
 void ofApp::button_pressed_draw2dwall() {
-	menu = "Conception Mur Basique";
+	menu = 4;
 }
 
 void ofApp::button_pressed_drawByParameters() {
-	menu = "Creation2d";
+	menu = 5;
 }
 
 void ofApp::button_pressed_freeDraw() {
-	menu = "free draw";
+	menu = 6;
 	freeDraw = true;
 }
 
 void ofApp::button_pressed_retourConception() {
-	menu = "conception";
+	menu = 2;
 }
 
 void ofApp::button_pressed_edition2d() {
-	menu = "Edition2d";
+	menu = 7;
 }
 
 void ofApp::button_pressed_saveNewLine2d() {
@@ -270,11 +273,11 @@ void ofApp::button_pressed_saveNewLine2d() {
 }
 
 void ofApp::button_pressed_addNewLine2d() {
-	if (newLineNumber==0)newLineNumber = 1;
+	if (newLineNumber == 0)newLineNumber = 1;
 }
 
 void ofApp::button_pressed_exitCreationByParameters() {
-	menu = "Conception Mur Basique";
+	menu = 4;
 	newLineNumber = 0;
 }
 
@@ -283,7 +286,7 @@ void ofApp::button_pressed_orientationLine() {
 }
 
 void ofApp::button_pressed_doneFreeDraw() {
-	menu = "Conception Mur Basique";
+	menu = 4;
 	freeDraw = false;
 }
 
