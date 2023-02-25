@@ -174,12 +174,18 @@ void ofApp::mouseMoved(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
+	if (freeDraw) {
+		labyrinthe.drawPreview(x, y);
+	}
 
-}
+	}
+	
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
 	if (freeDraw) {
+		labyrinthe.po.x = x;
+		labyrinthe.po.y = y;
 		labyrinthe.setNewLineX(x);
 		labyrinthe.setNewLineY(y);
 	}
@@ -193,6 +199,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
 	if (freeDraw) {
 		labyrinthe.addNewLine(x, y);
 	}
+	labyrinthe.mathPreview.clear();
 }
 
 //--------------------------------------------------------------

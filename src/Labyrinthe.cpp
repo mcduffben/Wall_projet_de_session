@@ -9,6 +9,12 @@ void Labyrinthe::setup() {
 	posSortieX = ofGetWindowWidth() / 2;
 	posSortieY = ofGetWindowHeight() / 2 - hauteur/2;
 	jeu_arbitraire = 20;
+	//preview.pinit.x = 0;
+	//preview.pinit.y = 0;
+	//preview.pfinal.x = 0;
+	//preview.pfinal.x = 0;
+	//preview.selected = false;
+
 }
 
 void Labyrinthe::update() {
@@ -29,6 +35,12 @@ void Labyrinthe::draw() {
 			if (murs2Dbasique[i].selected)ofSetColor(0, 0, 175);
 			else ofSetColor(255, 255, 255);
 			ofDrawLine(murs2Dbasique[i].pinit, murs2Dbasique[i].pfinal);
+		}
+		if (mathPreview.size() > 0) {
+			for (int i = 0; i < mathPreview.size(); i++) {
+				ofSetColor(255, 255, 255);
+				ofDrawLine(mathPreview[i].pinit, mathPreview[i].pfinal);
+			}
 		}
 	}
 	ofSetColor(0,175,0);
@@ -106,4 +118,21 @@ bool Labyrinthe::selectCheckerSingle(int x, int y) {
 		}
 	}
 	return false;
+}
+
+
+void Labyrinthe::drawPreview(int x, int y) {
+	mathPreview.clear();
+	
+	ofVec2f po, pf;
+	po = this->po;
+	pf.x = x;
+	pf.y = y;
+	LineDTO preview(po, pf);
+	mathPreview.push_back(preview);
+
+	//preview.pinit = po;
+	//preview.pfinal.x = x;
+	//preview.pfinal.y = y;
+	//ofDrawLine(preview.pinit,preview.pfinal);
 }

@@ -23,5 +23,10 @@ public:
 	void addNewLine(ofVec2f pi, ofVec2f pf, bool select);
 	void unselect_all();
 	bool selectCheckerSingle(int x, int y);
+
+	ofVec2f po;
+	vector<LineDTO> mathPreview;
+	//LineDTO preview;
+	void drawPreview(int x,int y);
 };
 
