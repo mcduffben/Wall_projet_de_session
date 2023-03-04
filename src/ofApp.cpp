@@ -3,9 +3,12 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	test = true;
+	labyrinthe3d.setup();
 	labyrinthe.setup();
 	renderer.setup();
-
+	
+	//cam.setDistance(900);
 	//Setup du UI
 	setupUi();
 
@@ -102,11 +105,18 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+
 	renderer.draw();
-
-	labyrinthe.draw();
+	if(test) {
+		labyrinthe.draw();
+	}
+	else {
+		cam.begin();
+		labyrinthe3d.wallGen(labyrinthe);
+		labyrinthe3d.draw();
+		cam.end();
+	}
 	drawUi();
-
 
 	//Ajout d'une nouvelle ligne par paramètres
 	if (newLineNumber > 0) {
@@ -159,7 +169,7 @@ void ofApp::drawUi() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-
+	test = false;
 }
 
 //--------------------------------------------------------------

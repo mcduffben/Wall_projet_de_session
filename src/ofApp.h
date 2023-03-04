@@ -3,6 +3,9 @@
 #include "ofMain.h"
 #include "renderer.h"
 #include "Labyrinthe.h"
+#include "ofxAssimpModelLoader.h"
+#include "../Labyrinthe3d.h"
+
 
 class ofApp : public ofBaseApp{
 
@@ -10,11 +13,13 @@ class ofApp : public ofBaseApp{
 		
 		Renderer renderer;
 		Labyrinthe labyrinthe;
-
+		Labyrinthe3d labyrinthe3d;
+		ofxAssimpModelLoader model;
+		ofEasyCam cam;
 		int menu;
 		vector<int> listeCurseurs;
 		
-		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing;
+		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing,test;
 		int newLineNumber, xLength, yLength;
 
 		ofxPanel guiPrincipal;
