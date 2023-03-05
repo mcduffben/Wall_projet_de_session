@@ -6,6 +6,7 @@ class LineDTO
 {
 
 public:
+	LineDTO() {};
 
 	int hauteur, largeur, epaisseur,angle;
 	int diffx, diffy;

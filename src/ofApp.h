@@ -10,9 +10,11 @@ class ofApp : public ofBaseApp{
 
 	public:
 		
+
 		Renderer renderer;
 		Labyrinthe labyrinthe;
 		PrimitiveDTO prime;
+		LineDTO line;
 
 		int menu;
 		int vue;
@@ -66,6 +68,37 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel affichageMur;
 		ofxButton retouraeditionligne, importerimg;
+
+		//upload Image
+
+		ofxButton button;
+		ofxButton button1;
+		ofxButton button2;
+		ofxButton button3;
+		ofxButton button4;
+		ofxButton button5;
+		ofxButton button6;
+		ofxButton button7;
+		void image_export(const string name, const string extension) const;
+		void button_pressed();
+
+		//couleur
+		ofParameter<ofColor> color_picker_background;
+		ofParameter<ofColor> color_picker_stroke;
+
+		ofColor background_color;
+		float stroke_weight;
+		ofColor stroke_color;
+		ofParameter<float> slider_stroke_weight;
+		ofxPanel gui;
+		ofxGuiGroup group_draw;
+
+		ofxButton button_contour;
+		bool actif_button = false;
+		void button_pressed_2();
+		void draw_app();
+		void update_app();
+//fin
 
 		void setup();
 		void setupUi();

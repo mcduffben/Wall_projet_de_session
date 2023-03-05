@@ -15,7 +15,7 @@ void ofApp::setup(){
 	//View : 1 = vue d'un seul mur, 2 = vue de dessus en 2d, 3 = vue en 3d
 	vue = 2;
 	//La liste des curseurs pour chaque menu
-	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5,0,0,0,0 };
+	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5,0,0,0,0,0 };
 
 	//Setup de variables
 	freeDraw, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings = false;
@@ -30,6 +30,14 @@ void ofApp::setup(){
 }
 
 void ofApp::setupUi() {
+
+	//Background
+	color_picker_background.set("couleur de fond", ofColor(31), ofColor(0, 0), ofColor(255, 255));
+	//Couleur de ligne de contour ou remplissage
+	color_picker_stroke.set("Remplissage ou contour", ofColor(255), ofColor(0, 0), ofColor(255, 255));
+	//Largeur de la ligne de contour 
+	slider_stroke_weight.set("largeur de la ligne", 4.0f, 0.0f, 15.0f);
+
 	//Setup du UI du menu principal
 	guiPrincipal.setup("Menu Principal");
 	guiPrincipal.add(boutonJeu.setup("Jouer"));
@@ -38,11 +46,21 @@ void ofApp::setupUi() {
 	boutonConception.addListener(this, &ofApp::button_pressed_conception);
 	guiPrincipal.add(boutonOptions.setup("Options"));
 	boutonOptions.addListener(this, &ofApp::button_pressed_options);
+	guiPrincipal.add(button.setup("Upload"));
+	button.addListener(this, &ofApp::button_pressed);
+
+	group_draw.add(color_picker_background);
+	group_draw.add(color_picker_stroke);
+	group_draw.add(slider_stroke_weight);
+
+	guiPrincipal.add(&group_draw);
 
 	//Setup du UI Jeu
 	guiJeu.setup("Jouer");
 	guiJeu.add(boutonCreationObstacle.setup("Ajouter des obstacles"));
 	guiJeu.add(boutonexport.setup("Exporter Labyrinthe en image"));
+	guiJeu.add(button1.setup("Upload"));
+	button1.addListener(this, &ofApp::button_pressed);
 	guiJeu.add(boutonExitJeu.setup("Retour"));
 	boutonexport.addListener(this, &ofApp::exportimg);
 	boutonCreationObstacle.addListener(this, &ofApp::button_pressed_ajouterobstacle);
@@ -53,6 +71,11 @@ void ofApp::setupUi() {
 	guiConception.add(draw2dWall.setup("Dessiner Mur Basique"));
 	draw2dWall.addListener(this, &ofApp::button_pressed_draw2dwall);
 	guiConception.add(edition2d.setup("Editer Murs"));
+	guiConception.add(button2.setup("Upload"));
+	button2.addListener(this, &ofApp::button_pressed);
+	button_contour.setup("Activer Contour");
+	button_contour.addListener(this, &ofApp::button_pressed_2);
+	guiConception.add(&button_contour);
 	edition2d.addListener(this, &ofApp::button_pressed_edition2d);
 	guiConception.add(boutonExitConception.setup("Retour"));
 	boutonExitConception.addListener(this, &ofApp::button_pressed_exit);
@@ -68,6 +91,8 @@ void ofApp::setupUi() {
 	guiConceptionMurBasique.setSize(300, 100);
 	guiConceptionMurBasique.add(boutonByParameters.setup("Creation Par Coordonnees"));
 	guiConceptionMurBasique.add(boutonDessinLibre.setup("Creation Par Dessin Libre"));
+	guiConceptionMurBasique.add(button3.setup("Upload"));
+	button3.addListener(this, &ofApp::button_pressed);
 	guiConceptionMurBasique.add(boutonRetourConceptionMur.setup("Retour"));
 	boutonByParameters.addListener(this, &ofApp::button_pressed_drawByParameters);
 	boutonDessinLibre.addListener(this, &ofApp::button_pressed_freeDraw);
@@ -80,6 +105,8 @@ void ofApp::setupUi() {
 	guiCreationMurByParameters.add(lengthLine.setup("Longueur", 100, 20, 1000));
 	guiCreationMurByParameters.add(orientationLine.setup("Changer orientation"));
 	guiCreationMurByParameters.add(saveNew2dWall.setup("Sauvegarder"));
+	guiCreationMurByParameters.add(button4.setup("Upload"));
+	button4.addListener(this, &ofApp::button_pressed);
 	guiCreationMurByParameters.add(exitCreationByParameters.setup("Retour"));
 	newLine.addListener(this, &ofApp::button_pressed_addNewLine2d);
 	orientationLine.addListener(this, &ofApp::button_pressed_orientationLine);
@@ -92,6 +119,8 @@ void ofApp::setupUi() {
 	//Setup du UI Conception Mur Dessin Libre
 	guiCreationDessinLibre.setup("Conception de murs par dessin libre");
 	guiCreationDessinLibre.add(doneFreeDraw.setup("Done"));
+	guiCreationDessinLibre.add(button5.setup("Upload"));
+	button5.addListener(this, &ofApp::button_pressed);
 	doneFreeDraw.addListener(this, &ofApp::button_pressed_doneFreeDraw);
 	guiCreationDessinLibre.setSize(350, 100);
 
@@ -102,6 +131,8 @@ void ofApp::setupUi() {
 	guiEdition2d.add(editEntreeSortieTerrain.setup("Fenetre d'edition de l'entree, de la sortie et du terrain"));
 	guiEdition2d.add(modifier1element.setup("Modifier le mur"));
 	guiEdition2d.add(modifierplusieurs.setup("Modifier les murs"));
+	guiEdition2d.add(button6.setup("Upload"));
+	button6.addListener(this, &ofApp::button_pressed);
 	guiEdition2d.add(retourEdition2d.setup("Retour"));
 	selectElement.addListener(this, &ofApp::button_pressed_selectElement);
 	selectMultipleElements.addListener(this, &ofApp::button_pressed_selectMultipleElement);
@@ -116,6 +147,8 @@ void ofApp::setupUi() {
 	guiEditionLigne.add(posxline.setup("Position x", 800, 0, 2000));
 	guiEditionLigne.add(posyline.setup("Position y", 800, 0, 2000));
 	guiEditionLigne.add(voirMur.setup("Affichier Mur"));
+	guiEditionLigne.add(button7.setup("Upload"));
+	button7.addListener(this, &ofApp::button_pressed);
 	guiEditionLigne.add(retour_a_edition2d.setup("Retour"));
 	voirMur.addListener(this, &ofApp::afficherMur);
 	retour_a_edition2d.addListener(this, &ofApp::button_pressed_retour_a_edition2d);
@@ -165,18 +198,18 @@ void ofApp::setupUi() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	if(vue==2)labyrinthe.update();
-	if (vue == 3)labyrinthe.update3d();
+	if(vue==2)labyrinthe.update(stroke_color, background_color);
+	if (vue == 3)labyrinthe.update3d(stroke_color, background_color);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
 	renderer.draw();
 	if (vue == 1)labyrinthe.drawWall();
-	if(vue==2)labyrinthe.draw();
+	if(vue==2)labyrinthe.draw(stroke_color, background_color);
 	if (vue == 3) {
 		cam.begin();
-		labyrinthe.draw3d();
+		labyrinthe.draw3d(stroke_color, background_color);
 		prime.draw3d();
 		//Ajout d'objet 3d
 		if (drawSphere) {
@@ -557,4 +590,96 @@ void ofApp::exportimg() {
 	string time_stamp = ofGetTimestampString("-%y%m%d-%H%M%S-%i");
 	image.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 	image.save(time_stamp);
+}
+
+//exportation d'image
+void ofApp::image_export(const string name, const string extension) const
+{
+	ofImage image;
+
+	// extraire des donn?es temporelles format?es
+	string time_stamp = ofGetTimestampString("-%y%m%d-%H%M%S-%i");
+
+	// g?n?rer un nom de fichier unique et ordonn?
+	string file_name = name + time_stamp + "." + extension;
+
+	// capturer le contenu du framebuffer actif
+	image.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+
+	// sauvegarder le fichier image
+	image.save(file_name);
+
+	//ofLog() << "<export image: " << file_name << ">";
+	ofLog() << stroke_color;
+}
+
+void ofApp::button_pressed()
+{
+	// réinitialiser la zone de texte
+	ofApp::image_export("render", "png");
+
+}
+
+//background et contour
+void ofApp::button_pressed_2()
+{
+	// réinitialiser la zone de texte
+	if (actif_button) {
+		actif_button = false;
+		button_contour.setName("Activer Contour");
+	}
+	else {
+		actif_button = true;
+		button_contour.setName("Desactiver Contour");
+	}
+	this->update();
+
+	//ofLog() << "<button pressed_2>";
+}
+
+void ofApp::draw_app() {
+	ofNoFill();
+	if (actif_button) {
+		//ofLog() << "<app::actif_btn_draw>";
+		//ofNoFill();
+	}
+
+	else {
+		//ofFill();
+		//ofLog() << "<app::No_actif_btn_draw>";
+	}
+
+	//this.draw();
+
+
+}
+
+void ofApp::update_app()
+{
+	ofNoFill();
+	// assigner les états courants de l'interface
+	background_color = color_picker_background;
+	stroke_color = color_picker_stroke;
+	stroke_weight = slider_stroke_weight;
+
+	ofSetColor(stroke_color);
+	ofSetLineWidth(stroke_weight);
+
+	labyrinthe.background = background_color;
+	line.epaisseur = stroke_weight;
+
+	ofNoFill();
+	if (actif_button) {
+		//ofLog() << "<app::actif_btn>";
+		//ofNoFill();
+		//ofLog() << "Hi";
+	}
+
+	else {
+
+		ofNoFill();
+		//ofLog() << "<app::No_actif_btn>";
+	}
+
+	//this->update();
 }

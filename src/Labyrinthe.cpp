@@ -24,7 +24,7 @@ void Labyrinthe::setup() {
 
 }
 
-void Labyrinthe::update() {
+void Labyrinthe::update(ofColor color, ofColor back) {
 	ofSetLineWidth(10);
 	posEntreeX = ofGetWindowWidth() / 2;
 	posEntreeY = ofGetWindowHeight() / 2 + hauteur / 2;
@@ -32,7 +32,7 @@ void Labyrinthe::update() {
 	posSortieY = ofGetWindowHeight() / 2 - hauteur / 2;
 }
 
-void Labyrinthe::draw() {
+void Labyrinthe::draw(ofColor color, ofColor back) {
 	ofSetColor(0,0,0);
 	ofFill();
 	ofDrawPlane(ofGetWindowWidth()/2,ofGetWindowHeight()/2,0,epaisseur,hauteur);
@@ -56,12 +56,12 @@ void Labyrinthe::draw() {
 	ofDrawPlane(posSortieX, posSortieY, 0, 20, 20);
 }
 
-void Labyrinthe::update3d() {
+void Labyrinthe::update3d(ofColor color, ofColor back) {
 	centre3d.x = 0;// -epaisseur / 2;
 	centre3d.y = 0;// -hauteur / 2;
 	centre3d.z = 0;
 }
-void Labyrinthe::draw3d() {
+void Labyrinthe::draw3d(ofColor color, ofColor back) {
 	ofSetColor(0, 0, 0);
 	ofFill();
 	ofDrawPlane(centre3d.x, centre3d.y, centre3d.z, epaisseur, hauteur);
