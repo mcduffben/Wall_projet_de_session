@@ -15,7 +15,6 @@ void Labyrinthe::setup() {
 	//preview.pfinal.x = 0;
 	//preview.pfinal.x = 0;
 	//preview.selected = false;
-	cam.setPosition(0, 0, 500);
 	background.set(0, 0, 0);
 	centre3d.x = 0;
 	centre3d.y = 0;
@@ -63,18 +62,38 @@ void Labyrinthe::update3d() {
 	centre3d.z = 0;
 }
 void Labyrinthe::draw3d() {
-	cam.begin();
-	ofSetColor(255, 255, 255);
+	ofSetColor(0, 0, 0);
 	ofFill();
 	ofDrawPlane(centre3d.x, centre3d.y, centre3d.z, epaisseur, hauteur);
 	for (int i = 0; i < murs2Dbasique.size(); i++) {
-		ofSetColor(ofRandom(255), ofRandom(255), ofRandom(255));
+		ofSetColor(255,255,255);
 		ofPushMatrix();
 		ofRotate(murs2Dbasique[i].angle);
 		ofDrawBox((murs2Dbasique[i].pinit.x+ murs2Dbasique[i].pfinal.x)/2 - ofGetWindowWidth()/2, (murs2Dbasique[i].pfinal.y+murs2Dbasique[i].pinit.y)/2-ofGetWindowHeight()/2, 0, murs2Dbasique[i].largeur, murs2Dbasique[i].epaisseur, murs2Dbasique[i].hauteur);
 		ofPopMatrix();
 	}
-	cam.end();
+}
+
+void Labyrinthe::drawWall() {
+	int largeur;
+	LineDTO l({ 0,0 }, { 0, 0 }, false);
+	for (int i = 0; i < murs2Dbasique.size(); i++) {
+		if (murs2Dbasique[i].selected) {
+			l = murs2Dbasique[i];
+		}
+	}
+	ofVec2f piE, pfE;
+	piE = {ofGetWindowWidth()/2.0f-l.largeur,ofGetWindowHeight()/2.0f-l.hauteur};
+	pfE = {piE.x+l.largeur,piE.y+l.hauteur};
+	ofSetColor(255, 255, 255);
+	ofDrawLine(piE, { piE.x,pfE.y });
+	ofDrawLine(piE, { pfE.x,piE.y });
+	ofDrawLine(pfE, { piE.x,pfE.y });
+	ofDrawLine(pfE, { pfE.x,piE.y });
+
+	if (l.hasImage) {
+		l.img.draw((piE.x + 5), (piE.y + 5), l.largeur -10, l.hauteur-10);
+	}
 }
 
 
@@ -164,4 +183,13 @@ void Labyrinthe::drawPreview(int x, int y) {
 	//preview.pfinal.x = x;
 	//preview.pfinal.y = y;
 	//ofDrawLine(preview.pinit,preview.pfinal);
+}
+
+void Labyrinthe::importimg(ofImage img) {
+	for (int i = 0; i < murs2Dbasique.size(); i++) {
+		if (murs2Dbasique[i].selected) {
+			murs2Dbasique[i].img = img;
+			murs2Dbasique[i].hasImage = true;
+		}
+	}
 }

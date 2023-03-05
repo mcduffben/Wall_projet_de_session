@@ -1,28 +1,13 @@
 #pragma once
 #include "ofMain.h"
+#include "ofxAssimpModelLoader.h"
+#include "CercleDTO.h"
+#include "Cylindre.h"
+#include "ModelDTO.h"
 
 class PrimitiveDTO
 {
 public:
-	struct CercleDTO
-	{
-		int rayon;
-		ofVec2f position;
-		ofColor couleur;
-
-		CercleDTO(int& r, ofVec2f p, ofColor c)
-			:rayon(r), position(p), couleur(c) {}
-	};
-
-	struct CylindreDTO
-	{
-		int height, rayon;
-		ofVec2f position;
-		ofColor couleur;
-
-		CylindreDTO(int& r, int& h, ofVec2f& p, ofColor c)
-			:height(h), rayon(r), position(p), couleur(c) {}
-	};
 
 	struct FormeVecDTO
 	{
@@ -34,21 +19,31 @@ public:
 	vector<vector<CercleDTO>> cerclesManager;
 	vector<vector<CylindreDTO>> cylindresManager;
 	vector<vector<FormeVecDTO>> formesManager;
+	vector<vector<ModelDTO>> modelManager;
 
-	int navCe,navCy,navF;
+	int navCe,navCy,navF, navM;
+	int navigator; //1=cercle,2=cylindre,3=modele
+	vector<int> historique;
 
 	void setup();
 	void draw();
 	void draw3d();
 
+	void undo();
+	void redo();
+
 	void undoCe();
 	void undoCy();
 	void undoF();
+	void undoM();
 	void redoCe();
 	void redoCy();
-	void RedoF();
-	void saveCe();
-	void saveCy();
+	void redoF();
+	void redoM();
+	void saveCe(int r, ofVec3f p, ofColor c);
+	void saveCy(int r, int h, ofVec3f p, ofColor c);
 	void saveF();
-};
+	void saveM(int dex, int dey, int sc, ofColor co, ofxAssimpModelLoader mo);
 
+	void cleanIrrelevantHistorique();
+};

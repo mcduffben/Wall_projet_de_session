@@ -4,6 +4,7 @@
 #include "renderer.h"
 #include "Labyrinthe.h"
 #include "PrimitiveDTO.h"
+#include "ofxAssimpModelLoader.h"
 
 class ofApp : public ofBaseApp{
 
@@ -16,9 +17,11 @@ class ofApp : public ofBaseApp{
 		int menu;
 		int vue;
 		vector<int> listeCurseurs;
+		ofEasyCam cam;
+		ofxAssimpModelLoader transitoryModel;
 		
 		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings;
-		bool modifyingLines, modifyingOneLine;
+		bool modifyingLines, modifyingOneLine, drawSphere,drawCyl,drawMod, wantsimport;
 		int newLineNumber, xLength, yLength;
 		int oldfloatsliderx,oldfloatslidery;
 
@@ -26,7 +29,7 @@ class ofApp : public ofBaseApp{
 		ofxButton boutonJeu, boutonConception,boutonOptions;
 
 		ofxPanel guiJeu;
-		ofxButton boutonExitJeu, boutonCreationObstacle;
+		ofxButton boutonExitJeu, boutonCreationObstacle, boutonexport;
 
 		ofxPanel guiConception;
 		ofxButton boutonExitConception, draw2dWall, edition2d;
@@ -49,7 +52,9 @@ class ofApp : public ofBaseApp{
 		ofxButton selectElement,selectMultipleElements, editEntreeSortieTerrain, retourEdition2d,modifier1element,modifierplusieurs;
 
 		ofxPanel guiObstacle;
-		ofxButton ajouterSphere, ajouterModele, ajouterCylindre, retourajouer;
+		ofxButton ajouterSphere, ajouterModele, ajouterCylindre, sauvegarderPrime3d, retourajouer, undoprime, redoprime;;
+		ofxFloatSlider absObstacle, ordObstacle, zObstacle, radObstacle, heightCylinder,scaleModel, degXmodel,degYmodel;
+		ofxColorSlider colObstacle;
 
 		ofxPanel guiEditionLigne;
 		ofxFloatSlider posxline, posyline;
@@ -58,6 +63,9 @@ class ofApp : public ofBaseApp{
 		ofxPanel guiEditionplusieurslignes;
 		ofxFloatSlider xlines, ylines;
 		ofxButton retour_a_edition2dbis;
+
+		ofxPanel affichageMur;
+		ofxButton retouraeditionligne, importerimg;
 
 		void setup();
 		void setupUi();
@@ -99,8 +107,15 @@ class ofApp : public ofBaseApp{
 		void button_pressed_ajouterSphere();
 		void button_pressed_ajouterCylindre();
 		void button_pressed_ajouterModele();
+		void button_pressed_saveObj3d();
 		void buttonretourajouer();
 		void button_pressed_retour_a_edition2d();
 		void button_pressed_modifier1ligne();
 		void button_pressed_modifierplusieurs();
+		void button_pressed_undoprime();
+		void button_pressed_redoprime();
+		void afficherMur();
+		void buttonretouraedition();
+		void buttonimportimg();
+		void exportimg();
 };

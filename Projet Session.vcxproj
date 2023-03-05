@@ -180,7 +180,10 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CercleDTO.cpp" />
+    <ClCompile Include="src\Cylindre.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ModelDTO.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\Labyrinthe.cpp" />
     <ClCompile Include="src\LineDTO.cpp" />
@@ -202,6 +205,9 @@
     <ClCompile Include="..\openFrameworks\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxToggle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CercleDTO.h" />
+    <ClInclude Include="src\Cylindre.h" />
+    <ClInclude Include="src\ModelDTO.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\Labyrinthe.h" />
     <ClInclude Include="src\LineDTO.h" />

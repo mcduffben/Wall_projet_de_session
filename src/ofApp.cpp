@@ -5,22 +5,25 @@
 void ofApp::setup(){
 	labyrinthe.setup();
 	renderer.setup();
+	prime.setup();
 
-
+	ofSetCircleResolution(60);
+	ofSetCylinderResolution(60,60);
 	//Menu : 0 = menu principal, 1 = jeu, 2 = conception, 3 = options, 
 	// 4 = mur basique (Conception), 5 = mur basique par param, 6 = mur basique dessin, 7 = édition 2D, 8 = edition ligne 2d
 	menu = 0;
 	//View : 1 = vue d'un seul mur, 2 = vue de dessus en 2d, 3 = vue en 3d
 	vue = 2;
 	//La liste des curseurs pour chaque menu
-	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5,0,0,0 };
+	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5,0,0,0,0 };
 
 	//Setup de variables
 	freeDraw, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings = false;
-	modifyingLines, modifyingOneLine = false;
+	modifyingLines, modifyingOneLine, drawSphere, drawCyl, drawMod, wantsimport = false;
 	horizontal = true;
 	oldfloatsliderx = 0;
 	oldfloatslidery = 0;
+	cam.setPosition(0, 0, 500);
 
 	//Setup du UI
 	setupUi();
@@ -39,7 +42,9 @@ void ofApp::setupUi() {
 	//Setup du UI Jeu
 	guiJeu.setup("Jouer");
 	guiJeu.add(boutonCreationObstacle.setup("Ajouter des obstacles"));
+	guiJeu.add(boutonexport.setup("Exporter Labyrinthe en image"));
 	guiJeu.add(boutonExitJeu.setup("Retour"));
+	boutonexport.addListener(this, &ofApp::exportimg);
 	boutonCreationObstacle.addListener(this, &ofApp::button_pressed_ajouterobstacle);
 	boutonExitJeu.addListener(this, &ofApp::button_pressed_exit);
 
@@ -110,7 +115,9 @@ void ofApp::setupUi() {
 	guiEditionLigne.setup("Edition d'une ligne");
 	guiEditionLigne.add(posxline.setup("Position x", 800, 0, 2000));
 	guiEditionLigne.add(posyline.setup("Position y", 800, 0, 2000));
+	guiEditionLigne.add(voirMur.setup("Affichier Mur"));
 	guiEditionLigne.add(retour_a_edition2d.setup("Retour"));
+	voirMur.addListener(this, &ofApp::afficherMur);
 	retour_a_edition2d.addListener(this, &ofApp::button_pressed_retour_a_edition2d);
 
 	//Setup du UI edition de plusieurs lignes
@@ -127,11 +134,33 @@ void ofApp::setupUi() {
 	guiObstacle.add(ajouterSphere.setup("Ajouter Sphere"));
 	guiObstacle.add(ajouterCylindre.setup("Ajouter Cylindre"));
 	guiObstacle.add(ajouterModele.setup("Ajouter Modele 3d"));
+	guiObstacle.add(absObstacle.setup("Abscisse", ofGetWidth()/2, 0, ofGetWidth()));
+	guiObstacle.add(ordObstacle.setup("Ordonnees", ofGetHeight()/2, 0, ofGetHeight()));
+	guiObstacle.add(zObstacle.setup("Profondeur", 0, -1000, 1000));
+	guiObstacle.add(radObstacle.setup("Rayon", 100, 50, 300));
+	guiObstacle.add(heightCylinder.setup("Hauteur cylindre", 100, 50, 300));
+	guiObstacle.add(scaleModel.setup("Scale du modele", 0.5, 0.1, 0.9));
+	guiObstacle.add(degXmodel.setup("Orientation X du modele", 270, 0, 360));
+	guiObstacle.add(degYmodel.setup("Orientation Y du modele", 270, 0, 360));
+	guiObstacle.add(colObstacle.setup("color", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
+	guiObstacle.add(sauvegarderPrime3d.setup("Sauvegarder"));
+	guiObstacle.add(undoprime.setup("Undo"));
+	guiObstacle.add(redoprime.setup("Redo"));
 	guiObstacle.add(retourajouer.setup("Retour"));
 	ajouterSphere.addListener(this, &ofApp::button_pressed_ajouterSphere);
 	ajouterCylindre.addListener(this, &ofApp::button_pressed_ajouterCylindre);
 	ajouterModele.addListener(this, &ofApp::button_pressed_ajouterModele);
+	sauvegarderPrime3d.addListener(this, &ofApp::button_pressed_saveObj3d);
+	undoprime.addListener(this,& ofApp::button_pressed_undoprime);
+	redoprime.addListener(this, &ofApp::button_pressed_redoprime);
 	retourajouer.addListener(this, &ofApp::buttonretourajouer);
+
+	//Setup UI afficher un mur
+	affichageMur.setup("Affichage d'un mur");
+	affichageMur.add(importerimg.setup("Importer une image"));
+	affichageMur.add(retouraeditionligne.setup("Retour"));
+	importerimg.addListener(this, &ofApp::buttonimportimg);
+	retouraeditionligne.addListener(this, &ofApp::buttonretouraedition);
 }
 
 //--------------------------------------------------------------
@@ -143,9 +172,33 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 	renderer.draw();
-
+	if (vue == 1)labyrinthe.drawWall();
 	if(vue==2)labyrinthe.draw();
-	if (vue == 3)labyrinthe.draw3d();
+	if (vue == 3) {
+		cam.begin();
+		labyrinthe.draw3d();
+		prime.draw3d();
+		//Ajout d'objet 3d
+		if (drawSphere) {
+			ofSetColor(colObstacle);
+			ofDrawSphere(absObstacle, ordObstacle, zObstacle, radObstacle);
+		}
+		if (drawCyl) {
+			ofSetColor(colObstacle);
+			ofDrawCylinder(absObstacle, ordObstacle, zObstacle, radObstacle, heightCylinder);
+		}
+		if (drawMod) {
+			ofPushMatrix();
+			ofRotateXDeg(degXmodel);
+			ofRotateYDeg(degYmodel);
+			ofSetColor(colObstacle);
+			transitoryModel.setScale(scaleModel, scaleModel, scaleModel);
+			transitoryModel.drawFaces();
+			ofPopMatrix();
+		}
+		//Fin objet 3d
+		cam.end();
+	}
 	drawUi();
 
 
@@ -235,7 +288,9 @@ void ofApp::drawUi() {
 	else if (menu == 10) {
 		guiObstacle.draw();
 	}
-	
+	else if (menu == 11) {
+		affichageMur.draw();
+	}
 }
 
 //--------------------------------------------------------------
@@ -312,7 +367,15 @@ void ofApp::gotMessage(ofMessage msg) {
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {
-
+	if (drawMod) {
+		transitoryModel.loadModel(dragInfo.files.at(0));
+	}
+	if (wantsimport) {
+		ofImage im;
+		im.load(dragInfo.files.at(0));
+		labyrinthe.importimg(im);
+		wantsimport = false;
+	}
 }
 
 //Bouton Jouer
@@ -409,17 +472,42 @@ void ofApp::button_pressed_ajouterobstacle() {
 }
 
 void ofApp::button_pressed_ajouterSphere() {
-
+	drawSphere = true;
+	drawCyl - false;
+	drawMod = false;
 }
 void ofApp::button_pressed_ajouterCylindre() {
-
+	drawSphere = false;
+	drawMod = false;
+	drawCyl = true;
 }
 void ofApp::button_pressed_ajouterModele() {
-
+	drawSphere = false;
+	drawCyl = false;
+	drawMod = true;
 }
 
+void ofApp::button_pressed_saveObj3d(){
+	if(drawSphere){
+		ofVec3f r(absObstacle, ordObstacle, zObstacle);
+		prime.saveCe(radObstacle, r, colObstacle);
+	}
+	if (drawCyl) {
+		ofVec3f r(absObstacle, ordObstacle, zObstacle);
+		prime.saveCy(radObstacle,heightCylinder, r, colObstacle);
+	}
+	if (drawMod) {
+		prime.saveM(degXmodel, degYmodel, scaleModel, colObstacle, transitoryModel);
+	}
+	drawSphere = false; 
+	drawCyl = false;
+	drawMod = false;
+}
 void ofApp::buttonretourajouer() {
 	menu = 1;
+	drawSphere = false;
+	drawCyl = false;
+	drawMod = false;
 }
 
 void ofApp::button_pressed_retour_a_edition2d() {
@@ -442,4 +530,31 @@ void ofApp::button_pressed_modifierplusieurs() {
 	wantsToSelectMultiple = false;
 	modifyingOneLine = false;
 	modifyingLines = true;
+}
+
+void ofApp::button_pressed_undoprime() {
+	prime.undo();
+}
+void ofApp::button_pressed_redoprime() {
+	prime.redo();
+}
+
+void ofApp::afficherMur() {
+	vue = 1;
+	menu = 11;
+}
+
+void ofApp::buttonretouraedition() {
+	vue = 2;
+	menu = 8;
+}
+void ofApp::buttonimportimg() {
+	wantsimport = true;
+}
+
+void ofApp::exportimg() {
+	ofImage image;
+	string time_stamp = ofGetTimestampString("-%y%m%d-%H%M%S-%i");
+	image.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	image.save(time_stamp);
 }

@@ -14,7 +14,6 @@ public:
 
 	vector<LineDTO> murs2Dbasique;
 	vector<of3dPrimitive> obstacles;
-	ofEasyCam cam;
 	ofColor background;
 	ofVec3f centre3d;
 
@@ -22,6 +21,7 @@ public:
 	void update();
 	void draw();
 	void draw3d();
+	void drawWall();
 	void update3d();
 
 	void setNewLineX(int x);
@@ -35,5 +35,7 @@ public:
 	vector<LineDTO> mathPreview;
 	//LineDTO preview;
 	void drawPreview(int x,int y);
+
+	void importimg(ofImage img);
 };
 
