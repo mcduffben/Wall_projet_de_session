@@ -18,11 +18,11 @@ public:
 	ofVec3f centre3d;
 
 	void setup();
-	void update(ofColor color, ofColor back);
-	void draw(ofColor color, ofColor back);
-	void draw3d(ofColor color, ofColor back);
+	void update(ofColor color, ofColor back,float epais,ofColor dessin);
+	void draw(ofColor color, ofColor back, float epais, ofColor dessin);
+	void draw3d(ofColor color, ofColor back, float epais, ofColor dessin);
 	void drawWall();
-	void update3d(ofColor color, ofColor back);
+	void update3d(ofColor color, ofColor back, float epais, ofColor dessin);
 
 	void setNewLineX(int x);
 	void setNewLineY(int y);
