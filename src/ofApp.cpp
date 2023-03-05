@@ -10,8 +10,10 @@ void ofApp::setup(){
 	setupUi();
 
 	//Menu : 0 = menu principal, 1 = jeu, 2 = conception, 3 = options, 
-	// 4 = mur basique (Conception), 5 = mur basique par param, 6 = mur basique dessin, 7 = édition 2D
+	// 4 = mur basique (Conception), 5 = mur basique par param, 6 = mur basique dessin, 7 = édition 2D, 8 = edition ligne 2d
 	menu = 0;
+	//View : 1 = vue d'un seul mur, 2 = vue de dessus en 2d, 3 = vue en 3d
+	vue = 2;
 	//La liste des curseurs pour chaque menu
 	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5 };
 
@@ -89,22 +91,33 @@ void ofApp::setupUi() {
 	guiEdition2d.add(selectElement.setup("Selectionner un element"));
 	guiEdition2d.add(editEntreeSortieTerrain.setup("Fenetre d'edition de l'entree, de la sortie et du terrain"));
 	guiEdition2d.add(retourEdition2d.setup("Retour"));
+	guiEdition2d.add(modifier1element.setup("Modifier le mur"));
+	guiEdition2d.add(modifierplusieurs.setup("Modifier les murs"));
 	selectElement.addListener(this, &ofApp::button_pressed_selectElement);
 	editEntreeSortieTerrain.addListener(this, &ofApp::button_pressed_editEntreeSortieTerrain);
 	retourEdition2d.addListener(this, &ofApp::button_pressed_retourConception);
 	guiEdition2d.setSize(500, 100);
+
+	//Setup du UI edition ligne 2d
+	guiEditionLigne.setup("Edition d'une ligne");
+	guiEditionLigne.add(xline.setup("Position x", 100, 0, 2000));
+	guiEditionLigne.add(yline.setup("Position y", 100, 0, 2000));
+	guiEditionLigne.add(retour_a_edition2d.setup("Retour"));
+	retour_a_edition2d.addListener(this, &ofApp::button_pressed_retour_a_edition2d);
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	labyrinthe.update();
+	if(vue==2)labyrinthe.update();
+	if (vue == 3)labyrinthe.update3d();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
 	renderer.draw();
 
-	labyrinthe.draw();
+	if(vue==2)labyrinthe.draw();
+	if (vue == 3)labyrinthe.draw3d();
 	drawUi();
 
 
@@ -155,6 +168,8 @@ void ofApp::drawUi() {
 	else if (menu == 7) {
 		guiEdition2d.draw();
 	}
+	else if (menu == 8) { 
+		guiEditionLigne.draw(); }
 }
 
 //--------------------------------------------------------------
@@ -190,7 +205,12 @@ void ofApp::mousePressed(int x, int y, int button) {
 		labyrinthe.setNewLineY(y);
 	}
 	if (wantsToSelect) {
-		labyrinthe.selectCheckerSingle(x, y);
+		bool l = labyrinthe.selectCheckerSingle(x, y);
+		if (l)hasSelectedSmthing = true;
+	}
+
+	if (vue == 3) {
+		cout <<"("<< x << ',' << y << ') ';
 	}
 }
 
@@ -231,12 +251,14 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 void ofApp::button_pressed_jeu()
 {
 	menu = 1;
+	vue = 3;
 }
 
 //Bouton Conception
 void ofApp::button_pressed_conception()
 {
 	menu = 2;
+	vue = 2;
 }
 
 //Bouton Options
@@ -249,6 +271,7 @@ void ofApp::button_pressed_options()
 void ofApp::button_pressed_exit()
 {
 	menu = 0;
+	vue = 2;
 }
 
 void ofApp::button_pressed_draw2dwall() {
@@ -297,10 +320,30 @@ void ofApp::button_pressed_doneFreeDraw() {
 	freeDraw = false;
 }
 
-
 void ofApp::button_pressed_selectElement() {
 	wantsToSelect = true;
 }
 void ofApp::button_pressed_editEntreeSortieTerrain() {
 
+}
+
+void ofApp::button_pressed_ajouterSphere() {
+
+}
+void ofApp::button_pressed_ajouterCylindre() {
+
+}
+void ofApp::button_pressed_ajouterModele() {
+
+}
+
+void ofApp::button_pressed_retour_a_edition2d() {
+	menu = 7;
+}
+
+void ofApp::button_pressed_modifier1ligne() {
+	menu = 8;
+}
+void ofApp::button_pressed_modifierplusieurs() {
+	menu = 9;
 }

@@ -10,12 +10,19 @@ public:
 
 	int echelle, epaisseur, hauteur;
 	int newLineX, newLineY, posEntreeX,posEntreeY,posSortieX,posSortieY, jeu_arbitraire;
+	int hauteurMur3d;
 
 	vector<LineDTO> murs2Dbasique;
+	vector<of3dPrimitive> obstacles;
+	ofEasyCam cam;
+	ofColor background;
+	ofVec3f centre3d;
 
 	void setup();
 	void update();
 	void draw();
+	void draw3d();
+	void update3d();
 
 	void setNewLineX(int x);
 	void setNewLineY(int y);

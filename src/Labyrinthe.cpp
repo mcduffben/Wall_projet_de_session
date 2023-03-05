@@ -1,4 +1,5 @@
 #include "Labyrinthe.h"
+#include <math.h>
 
 void Labyrinthe::setup() {
 	epaisseur = 1000;
@@ -14,6 +15,13 @@ void Labyrinthe::setup() {
 	//preview.pfinal.x = 0;
 	//preview.pfinal.x = 0;
 	//preview.selected = false;
+	cam.setPosition(0, 0, 500);
+	background.set(0, 0, 0);
+	centre3d.x = 0;
+	centre3d.y = 0;
+	centre3d.z = 0;
+
+	hauteurMur3d = 100;
 
 }
 
@@ -48,6 +56,27 @@ void Labyrinthe::draw() {
 	ofSetColor(175, 0, 0);
 	ofDrawPlane(posSortieX, posSortieY, 0, 20, 20);
 }
+
+void Labyrinthe::update3d() {
+	centre3d.x = 0;// -epaisseur / 2;
+	centre3d.y = 0;// -hauteur / 2;
+	centre3d.z = 0;
+}
+void Labyrinthe::draw3d() {
+	cam.begin();
+	ofSetColor(255, 255, 255);
+	ofFill();
+	ofDrawPlane(centre3d.x, centre3d.y, centre3d.z, epaisseur, hauteur);
+	for (int i = 0; i < murs2Dbasique.size(); i++) {
+		ofSetColor(ofRandom(255), ofRandom(255), ofRandom(255));
+		ofPushMatrix();
+		ofRotate(murs2Dbasique[i].angle);
+		ofDrawBox((murs2Dbasique[i].pinit.x+ murs2Dbasique[i].pfinal.x)/2 - ofGetWindowWidth()/2, (murs2Dbasique[i].pfinal.y+murs2Dbasique[i].pinit.y)/2-ofGetWindowHeight()/2, 0, murs2Dbasique[i].largeur, murs2Dbasique[i].epaisseur, murs2Dbasique[i].hauteur);
+		ofPopMatrix();
+	}
+	cam.end();
+}
+
 
 void Labyrinthe::setNewLineX(int x) {
 	this->newLineX = x;

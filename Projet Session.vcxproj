@@ -180,10 +180,12 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="PrimitiveDTO.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\Labyrinthe.cpp" />
     <ClCompile Include="src\LineDTO.cpp" />
+    <ClCompile Include="src\PrimitiveDTO.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="..\openFrameworks\of_v0.11.2_vs2017_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
     <ClCompile Include="..\openFrameworks\of_v0.11.2_vs2017_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.cpp" />
@@ -201,9 +203,11 @@
     <ClCompile Include="..\openFrameworks\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxToggle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PrimitiveDTO.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\Labyrinthe.h" />
     <ClInclude Include="src\LineDTO.h" />
+    <ClInclude Include="src\PrimitiveDTO.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="..\openFrameworks\of_v0.11.2_vs2017_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
     <ClInclude Include="..\openFrameworks\of_v0.11.2_vs2017_release\addons\ofxAssimpModelLoader\src\ofxAssimpMeshHelper.h" />

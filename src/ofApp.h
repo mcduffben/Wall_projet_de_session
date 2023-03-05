@@ -12,6 +12,7 @@ class ofApp : public ofBaseApp{
 		Labyrinthe labyrinthe;
 
 		int menu;
+		int vue;
 		vector<int> listeCurseurs;
 		
 		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing;
@@ -21,7 +22,7 @@ class ofApp : public ofBaseApp{
 		ofxButton boutonJeu, boutonConception,boutonOptions;
 
 		ofxPanel guiJeu;
-		ofxButton boutonExitJeu;
+		ofxButton boutonExitJeu, boutonCreationObstacle;
 
 		ofxPanel guiConception;
 		ofxButton boutonExitConception, draw2dWall, edition2d;
@@ -41,7 +42,17 @@ class ofApp : public ofBaseApp{
 		ofxButton doneFreeDraw;
 
 		ofxPanel guiEdition2d;
-		ofxButton selectElement, editEntreeSortieTerrain, retourEdition2d;
+		ofxButton selectElement, editEntreeSortieTerrain, retourEdition2d,modifier1element,modifierplusieurs;
+
+		ofxPanel guiObstacle;
+		ofxButton ajouterSphere, ajouterModele, ajouterCylindre, retourajouer;
+
+		ofxPanel guiEditionLigne;
+		ofxFloatSlider xline, yline;
+		ofxButton retour_a_edition2d, voirMur;
+
+		ofxPanel guiEditionplusieurslignes;
+		ofxFloatSlider xline, yline;
 
 		void setup();
 		void setupUi();
@@ -78,4 +89,10 @@ class ofApp : public ofBaseApp{
 		void button_pressed_doneFreeDraw();
 		void button_pressed_selectElement();
 		void button_pressed_editEntreeSortieTerrain();
+		void button_pressed_ajouterSphere();
+		void button_pressed_ajouterCylindre();
+		void button_pressed_ajouterModele();
+		void button_pressed_retour_a_edition2d();
+		void button_pressed_modifier1ligne();
+		void button_pressed_modifierplusieurs();
 };

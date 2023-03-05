@@ -7,6 +7,7 @@ class LineDTO
 
 public:
 
+	int hauteur, largeur, epaisseur,angle;
 	ofVec2f pinit, pfinal;
 	bool selected;
 
