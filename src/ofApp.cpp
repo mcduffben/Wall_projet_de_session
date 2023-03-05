@@ -198,18 +198,22 @@ void ofApp::setupUi() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	if(vue==2)labyrinthe.update(stroke_color, background_color);
-	if (vue == 3)labyrinthe.update3d(stroke_color, background_color);
+
+	if(vue==2)labyrinthe.update(color_picker_stroke, background_color);
+	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color);
+	ofBackground(color_picker_background);
+	//ofColor();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+
 	renderer.draw();
 	if (vue == 1)labyrinthe.drawWall();
-	if(vue==2)labyrinthe.draw(stroke_color, background_color);
+	if(vue==2)labyrinthe.draw(color_picker_stroke, background_color);
 	if (vue == 3) {
 		cam.begin();
-		labyrinthe.draw3d(stroke_color, background_color);
+		labyrinthe.draw3d(color_picker_stroke, background_color);
 		prime.draw3d();
 		//Ajout d'objet 3d
 		if (drawSphere) {
@@ -284,6 +288,7 @@ void ofApp::draw() {
 
 	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
 	renderer.drawCursor(listeCurseurs[menu]);
+	//ofBackground(stroke_color);
 }
 
 //Le UI est dessiné, selon le menu désiré

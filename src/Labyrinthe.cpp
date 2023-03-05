@@ -25,6 +25,8 @@ void Labyrinthe::setup() {
 }
 
 void Labyrinthe::update(ofColor color, ofColor back) {
+	ofSetColor(color);
+	background.set(back);
 	ofSetLineWidth(10);
 	posEntreeX = ofGetWindowWidth() / 2;
 	posEntreeY = ofGetWindowHeight() / 2 + hauteur / 2;
@@ -33,7 +35,7 @@ void Labyrinthe::update(ofColor color, ofColor back) {
 }
 
 void Labyrinthe::draw(ofColor color, ofColor back) {
-	ofSetColor(0,0,0);
+	ofSetColor(color);
 	ofFill();
 	ofDrawPlane(ofGetWindowWidth()/2,ofGetWindowHeight()/2,0,epaisseur,hauteur);
 	ofSetColor(255, 255, 255);
