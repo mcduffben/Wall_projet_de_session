@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "renderer.h"
 #include "Labyrinthe.h"
+#include "PrimitiveDTO.h"
 
 class ofApp : public ofBaseApp{
 
@@ -10,13 +11,16 @@ class ofApp : public ofBaseApp{
 		
 		Renderer renderer;
 		Labyrinthe labyrinthe;
+		PrimitiveDTO prime;
 
 		int menu;
 		int vue;
 		vector<int> listeCurseurs;
 		
-		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing;
+		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings;
+		bool modifyingLines, modifyingOneLine;
 		int newLineNumber, xLength, yLength;
+		int oldfloatsliderx,oldfloatslidery;
 
 		ofxPanel guiPrincipal;
 		ofxButton boutonJeu, boutonConception,boutonOptions;
@@ -42,17 +46,18 @@ class ofApp : public ofBaseApp{
 		ofxButton doneFreeDraw;
 
 		ofxPanel guiEdition2d;
-		ofxButton selectElement, editEntreeSortieTerrain, retourEdition2d,modifier1element,modifierplusieurs;
+		ofxButton selectElement,selectMultipleElements, editEntreeSortieTerrain, retourEdition2d,modifier1element,modifierplusieurs;
 
 		ofxPanel guiObstacle;
 		ofxButton ajouterSphere, ajouterModele, ajouterCylindre, retourajouer;
 
 		ofxPanel guiEditionLigne;
-		ofxFloatSlider xline, yline;
+		ofxFloatSlider posxline, posyline;
 		ofxButton retour_a_edition2d, voirMur;
 
 		ofxPanel guiEditionplusieurslignes;
-		ofxFloatSlider xline, yline;
+		ofxFloatSlider xlines, ylines;
+		ofxButton retour_a_edition2dbis;
 
 		void setup();
 		void setupUi();
@@ -88,10 +93,13 @@ class ofApp : public ofBaseApp{
 		void button_pressed_orientationLine();
 		void button_pressed_doneFreeDraw();
 		void button_pressed_selectElement();
+		void button_pressed_selectMultipleElement();
 		void button_pressed_editEntreeSortieTerrain();
+		void button_pressed_ajouterobstacle();
 		void button_pressed_ajouterSphere();
 		void button_pressed_ajouterCylindre();
 		void button_pressed_ajouterModele();
+		void buttonretourajouer();
 		void button_pressed_retour_a_edition2d();
 		void button_pressed_modifier1ligne();
 		void button_pressed_modifierplusieurs();

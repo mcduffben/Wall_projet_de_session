@@ -118,8 +118,8 @@ void Labyrinthe::unselect_all() {
 	}
 }
 
-bool Labyrinthe::selectCheckerSingle(int x, int y) {
-	unselect_all();
+bool Labyrinthe::selectCheckerSingle(bool single,int x, int y) {
+	if(single)unselect_all();
 	for (int i = 0; i < murs2Dbasique.size(); i++) {
 		if ((murs2Dbasique[i].pfinal.x - murs2Dbasique[i].pinit.x) < jeu_arbitraire && (murs2Dbasique[i].pfinal.x - murs2Dbasique[i].pinit.x) > -jeu_arbitraire) {
 			if (murs2Dbasique[i].pfinal.y > murs2Dbasique[i].pinit.y) {

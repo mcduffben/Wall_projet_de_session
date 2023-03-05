@@ -29,7 +29,7 @@ public:
 	void addNewLine(int x, int y);
 	void addNewLine(ofVec2f pi, ofVec2f pf, bool select);
 	void unselect_all();
-	bool selectCheckerSingle(int x, int y);
+	bool selectCheckerSingle(bool single,int x, int y);
 
 	ofVec2f po;
 	vector<LineDTO> mathPreview;

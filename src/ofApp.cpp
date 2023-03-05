@@ -6,8 +6,6 @@ void ofApp::setup(){
 	labyrinthe.setup();
 	renderer.setup();
 
-	//Setup du UI
-	setupUi();
 
 	//Menu : 0 = menu principal, 1 = jeu, 2 = conception, 3 = options, 
 	// 4 = mur basique (Conception), 5 = mur basique par param, 6 = mur basique dessin, 7 = édition 2D, 8 = edition ligne 2d
@@ -15,11 +13,17 @@ void ofApp::setup(){
 	//View : 1 = vue d'un seul mur, 2 = vue de dessus en 2d, 3 = vue en 3d
 	vue = 2;
 	//La liste des curseurs pour chaque menu
-	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5 };
+	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5,0,0,0 };
 
 	//Setup de variables
-	freeDraw,wantsToSelect,hasSelectedSmthing = false;
+	freeDraw, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings = false;
+	modifyingLines, modifyingOneLine = false;
 	horizontal = true;
+	oldfloatsliderx = 0;
+	oldfloatslidery = 0;
+
+	//Setup du UI
+	setupUi();
 }
 
 void ofApp::setupUi() {
@@ -34,12 +38,13 @@ void ofApp::setupUi() {
 
 	//Setup du UI Jeu
 	guiJeu.setup("Jouer");
+	guiJeu.add(boutonCreationObstacle.setup("Ajouter des obstacles"));
 	guiJeu.add(boutonExitJeu.setup("Retour"));
+	boutonCreationObstacle.addListener(this, &ofApp::button_pressed_ajouterobstacle);
 	boutonExitJeu.addListener(this, &ofApp::button_pressed_exit);
 
 	//Setup du UI Conception
 	guiConception.setup("Conception");
-
 	guiConception.add(draw2dWall.setup("Dessiner Mur Basique"));
 	draw2dWall.addListener(this, &ofApp::button_pressed_draw2dwall);
 	guiConception.add(edition2d.setup("Editer Murs"));
@@ -49,7 +54,6 @@ void ofApp::setupUi() {
 
 	//Setup du UI Options
 	guiOptions.setup("Options");
-
 	boutonExitOptions.setup("Retour");
 	boutonExitOptions.addListener(this, &ofApp::button_pressed_exit);
 	guiOptions.add(&boutonExitOptions);
@@ -89,21 +93,45 @@ void ofApp::setupUi() {
 	//Setup du UI Edition en 2d
 	guiEdition2d.setup("Fenetre d'edition 2d");
 	guiEdition2d.add(selectElement.setup("Selectionner un element"));
+	guiEdition2d.add(selectMultipleElements.setup("Selectionner des elements"));
 	guiEdition2d.add(editEntreeSortieTerrain.setup("Fenetre d'edition de l'entree, de la sortie et du terrain"));
-	guiEdition2d.add(retourEdition2d.setup("Retour"));
 	guiEdition2d.add(modifier1element.setup("Modifier le mur"));
 	guiEdition2d.add(modifierplusieurs.setup("Modifier les murs"));
+	guiEdition2d.add(retourEdition2d.setup("Retour"));
 	selectElement.addListener(this, &ofApp::button_pressed_selectElement);
+	selectMultipleElements.addListener(this, &ofApp::button_pressed_selectMultipleElement);
 	editEntreeSortieTerrain.addListener(this, &ofApp::button_pressed_editEntreeSortieTerrain);
+	modifier1element.addListener(this, &ofApp::button_pressed_modifier1ligne);
+	modifierplusieurs.addListener(this, &ofApp::button_pressed_modifierplusieurs);
 	retourEdition2d.addListener(this, &ofApp::button_pressed_retourConception);
 	guiEdition2d.setSize(500, 100);
 
 	//Setup du UI edition ligne 2d
 	guiEditionLigne.setup("Edition d'une ligne");
-	guiEditionLigne.add(xline.setup("Position x", 100, 0, 2000));
-	guiEditionLigne.add(yline.setup("Position y", 100, 0, 2000));
+	guiEditionLigne.add(posxline.setup("Position x", 800, 0, 2000));
+	guiEditionLigne.add(posyline.setup("Position y", 800, 0, 2000));
 	guiEditionLigne.add(retour_a_edition2d.setup("Retour"));
 	retour_a_edition2d.addListener(this, &ofApp::button_pressed_retour_a_edition2d);
+
+	//Setup du UI edition de plusieurs lignes
+	guiEditionplusieurslignes.setup("Edition de plusieurs lignes");
+	guiEditionplusieurslignes.add(xlines.setup("Positions x", 0, -50, 50));
+	guiEditionplusieurslignes.add(ylines.setup("Positions y", 0, -50, 50));
+	guiEditionplusieurslignes.add(retour_a_edition2dbis.setup("Retour"));
+	retour_a_edition2dbis.addListener(this, &ofApp::button_pressed_retour_a_edition2d);
+
+	//Setup du UI ajouterObstacle
+	//ofxPanel guiObstacle;
+	//ofxButton ajouterSphere, ajouterModele, ajouterCylindre, retourajouer;
+	guiObstacle.setup("Ajouter des obstacles");
+	guiObstacle.add(ajouterSphere.setup("Ajouter Sphere"));
+	guiObstacle.add(ajouterCylindre.setup("Ajouter Cylindre"));
+	guiObstacle.add(ajouterModele.setup("Ajouter Modele 3d"));
+	guiObstacle.add(retourajouer.setup("Retour"));
+	ajouterSphere.addListener(this, &ofApp::button_pressed_ajouterSphere);
+	ajouterCylindre.addListener(this, &ofApp::button_pressed_ajouterCylindre);
+	ajouterModele.addListener(this, &ofApp::button_pressed_ajouterModele);
+	retourajouer.addListener(this, &ofApp::buttonretourajouer);
 }
 
 //--------------------------------------------------------------
@@ -137,6 +165,36 @@ void ofApp::draw() {
 	ofSetColor(255, 255, 255);
 	//fin de la fonction
 
+	//Edition de lignes
+	if (modifyingOneLine) {
+		for (int i = 0; i < labyrinthe.murs2Dbasique.size();i++) {
+			if (labyrinthe.murs2Dbasique[i].selected) {
+				labyrinthe.murs2Dbasique[i].pinit.x = posxline;
+				labyrinthe.murs2Dbasique[i].pfinal.x = posxline+ labyrinthe.murs2Dbasique[i].diffx;
+				labyrinthe.murs2Dbasique[i].pinit.y = posyline;
+				labyrinthe.murs2Dbasique[i].pfinal.y = posyline + labyrinthe.murs2Dbasique[i].diffy;
+			}
+		}
+	}
+	if (modifyingLines && xlines!=oldfloatsliderx) {
+		for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
+			if (labyrinthe.murs2Dbasique[i].selected) {
+				labyrinthe.murs2Dbasique[i].pinit.x += xlines;
+				labyrinthe.murs2Dbasique[i].pfinal.x += xlines;
+			}
+		}
+	}
+	if (modifyingLines && ylines != oldfloatslidery) {
+		for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
+			if (labyrinthe.murs2Dbasique[i].selected) {
+				labyrinthe.murs2Dbasique[i].pinit.y += ylines;
+				labyrinthe.murs2Dbasique[i].pfinal.y += ylines;
+			}
+		}
+	}
+	oldfloatsliderx = xlines;
+	oldfloatslidery = ylines;
+	//Edition de lignes finie
 
 	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
 	renderer.drawCursor(listeCurseurs[menu]);
@@ -168,8 +226,16 @@ void ofApp::drawUi() {
 	else if (menu == 7) {
 		guiEdition2d.draw();
 	}
-	else if (menu == 8) { 
-		guiEditionLigne.draw(); }
+	else if (menu == 8) {
+		guiEditionLigne.draw();
+	}
+	else if (menu == 9) {
+		guiEditionplusieurslignes.draw();
+	}
+	else if (menu == 10) {
+		guiObstacle.draw();
+	}
+	
 }
 
 //--------------------------------------------------------------
@@ -205,13 +271,15 @@ void ofApp::mousePressed(int x, int y, int button) {
 		labyrinthe.setNewLineY(y);
 	}
 	if (wantsToSelect) {
-		bool l = labyrinthe.selectCheckerSingle(x, y);
+		bool l =labyrinthe.selectCheckerSingle(true,x, y);
 		if (l)hasSelectedSmthing = true;
 	}
 
-	if (vue == 3) {
-		cout <<"("<< x << ',' << y << ') ';
+	if (wantsToSelectMultiple) {
+		bool l = labyrinthe.selectCheckerSingle(false,x, y);
+		if (l)hasSelectedThings = true;
 	}
+
 }
 
 //--------------------------------------------------------------
@@ -288,6 +356,9 @@ void ofApp::button_pressed_freeDraw() {
 }
 
 void ofApp::button_pressed_retourConception() {
+	labyrinthe.unselect_all();
+	wantsToSelectMultiple = false;
+	wantsToSelect = false;
 	menu = 2;
 }
 
@@ -321,10 +392,20 @@ void ofApp::button_pressed_doneFreeDraw() {
 }
 
 void ofApp::button_pressed_selectElement() {
+	wantsToSelectMultiple = false;
 	wantsToSelect = true;
 }
+void ofApp::button_pressed_selectMultipleElement() {
+	wantsToSelectMultiple = true;
+	wantsToSelect = false;
+}
 void ofApp::button_pressed_editEntreeSortieTerrain() {
+	wantsToSelectMultiple = false;
+	wantsToSelect = false;
+}
 
+void ofApp::button_pressed_ajouterobstacle() {
+	menu = 10;
 }
 
 void ofApp::button_pressed_ajouterSphere() {
@@ -337,13 +418,28 @@ void ofApp::button_pressed_ajouterModele() {
 
 }
 
+void ofApp::buttonretourajouer() {
+	menu = 1;
+}
+
 void ofApp::button_pressed_retour_a_edition2d() {
 	menu = 7;
 }
 
 void ofApp::button_pressed_modifier1ligne() {
-	menu = 8;
+	if(hasSelectedSmthing)menu = 8;
+	hasSelectedSmthing = false;
+	wantsToSelect = false;
+	wantsToSelectMultiple = false;
+	modifyingLines = false;
+	modifyingOneLine = true;
 }
 void ofApp::button_pressed_modifierplusieurs() {
-	menu = 9;
+	//if has selected
+	if(hasSelectedThings)menu = 9;
+	hasSelectedThings = false;
+	wantsToSelect = false;
+	wantsToSelectMultiple = false;
+	modifyingOneLine = false;
+	modifyingLines = true;
 }
