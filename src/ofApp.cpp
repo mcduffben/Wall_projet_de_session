@@ -212,8 +212,8 @@ void ofApp::setupUi() {
 //--------------------------------------------------------------
 void ofApp::update() {
 
-	if(vue==2)labyrinthe.update(color_picker_stroke, background_color);
-	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color);
+	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, stroke_weight, color_dessin);
+	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, stroke_weight, color_dessin);
 	ofBackground(color_picker_background);
 	if (timeDeFrame > 0)
 	{
@@ -230,7 +230,7 @@ void ofApp::draw() {
 	if(vue==2)labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
 	if (vue == 3) {
 		cam.begin();
-		labyrinthe.draw3d(color_picker_stroke, background_color);
+		labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
      	prime.draw3d();
 
 		player.enableColors();

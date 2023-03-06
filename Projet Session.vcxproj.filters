@@ -76,6 +76,12 @@
     <ClCompile Include="src\ModelDTO.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\particleSystem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effecdeParticule.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -318,6 +324,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ModelDTO.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\particleSystem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\effecdeParticule.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
