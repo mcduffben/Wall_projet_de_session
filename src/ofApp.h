@@ -6,6 +6,57 @@
 #include "PrimitiveDTO.h"
 #include "ofxAssimpModelLoader.h"
 #include <particleSystem.h>
+#include <array>
+
+// énumération des types de kernel de convolution
+enum class ConvolutionKernel
+{
+	identity,
+	emboss,
+	sharpen,
+	edge_detect,
+	blur
+};
+
+// kernel de convolution (3x3) : identité
+const std::array<float, 9> convolution_kernel_identity
+{
+  0.0f,  0.0f,  0.0f,
+  0.0f,  1.0f,  0.0f,
+  0.0f,  0.0f,  0.0f
+};
+
+// kernel de convolution (3x3) : aiguiser
+const std::array<float, 9> convolution_kernel_sharpen
+{
+  0.0f, -1.0f,  0.0f,
+ -1.0f,  5.0f, -1.0f,
+  0.0f, -1.0f,  0.0f
+};
+
+// kernel de convolution (3x3) : détection de bordure
+const std::array<float, 9> convolution_kernel_edge_detect
+{
+  0.0f,  1.0f,  0.0f,
+  1.0f, -4.0f,  1.0f,
+  0.0f,  1.0f,  0.0f
+};
+
+// kernel de convolution (3x3) : bosseler
+const std::array<float, 9> convolution_kernel_emboss
+{
+ -2.0f, -1.0f,  0.0f,
+ -1.0f,  1.0f,  1.0f,
+  0.0f,  1.0f,  2.0f
+};
+
+// kernel de convolution (3x3) : flou
+const std::array<float, 9> convolution_kernel_blur
+{
+  1.0f / 9.0f,  1.0f / 9.0f,  1.0f / 9.0f,
+  1.0f / 9.0f,  1.0f / 9.0f,  1.0f / 9.0f,
+  1.0f / 9.0f,  1.0f / 9.0f,  1.0f / 9.0f
+};
 
 class ofApp : public ofBaseApp{
 
@@ -182,4 +233,110 @@ class ofApp : public ofBaseApp{
 
 		particleSystem* ps;
 		ofImage img;
+//tone mapping
+		ofImage image;
+		ofFbo fbo;
+		ofShader shader;
+
+		int offset_vertical;
+		int offset_horizontal;
+
+		
+		ofxGuiGroup group_tone_mapping;
+		ofParameter<float> slider_exposure;
+		ofParameter<float> slider_gamma;
+		ofParameter<bool> toggle_tone_mapping;
+
+		ofxGuiGroup filtrage;
+		ofxButton identique;
+		void button_identique();
+		ofxButton blur;
+		void button_blur();
+		ofxButton edge_detect;
+		void button_edge_detect();
+		ofxButton sharpen;
+		void button_sharpen();
+		
+		ofxButton emboss;
+		void button_emboss();
+
+		ofxButton Linear;
+		void button_Linear();
+
+		ofxButton Nearest;
+		void button_Nearest();
+
+		float tone_mapping_exposure;
+		float tone_mapping_gamma;
+		bool tone_mapping_toggle;
+
+		ofParameter<bool> linear;
+		ofParameter<bool> nearest;
+		ofParameter<bool> sphere;
+		
+
+		bool blur_var=false;
+		bool edge_detect_var = false;
+		bool sharpen_var = false;
+		bool emboss_var = false;
+		bool Linear_var = false;
+		bool Nearest_var = false;
+		bool identique_var=true;
+		ofxGuiGroup illimunation;
+		ofParameter<bool> activer;
+		bool illum_active = true;
+		
+
+//convulsion
+		ConvolutionKernel kernel_type;
+
+		string kernel_name;
+		int image_width;
+		int image_height;
+		ofImage image_destination;
+		ofImage image1;
+		ofImage image_source;
+		void filter();
+		bool tone = true;
+		ofTexture mTex;
+		ofTexture mTex1;
+		ofTrueTypeFont myfont;
+		int screen_h = 0;
+		int screen_w = 0;
+		//ofEasyCam cam;
+		ofPlanePrimitive plane;
+
+		ofShader shader_gouraud;
+		ofShader shader_phong;
+		ofShader shader_blinn_phong;
+
+		ofVec3f position_gouraud;
+		ofVec3f position_phong;
+		ofVec3f position_blinn_phong;
+
+		float oscillation;
+
+		float scale_gouraud;
+		float scale_phong;
+		float scale_blinn_phong;
+
+		float oscillation_frequency;
+		float oscillation_amplitude;
+
+		float speed_motion;
+
+		float offset_x;
+		float offset_z;
+
+		float delta_x;
+		float delta_z;
+
+		float initial_x;
+		float initial_z;
+
+		float center_x;
+		float center_y;
+		float oscillate(float time, float frequency, float amplitude);
+		void reset();
+		ofLight light;
 };
