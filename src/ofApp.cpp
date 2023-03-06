@@ -3,6 +3,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	//cam.setAutoDistance(2000);
+	//camera.setAutoDistance(2000);
+	//camera3.setAutoDistance(2000);
 	labyrinthe.setup();
 	renderer.setup();
 	prime.setup();
@@ -23,7 +26,10 @@ void ofApp::setup(){
 	horizontal = true;
 	oldfloatsliderx = 0;
 	oldfloatslidery = 0;
-	cam.setPosition(0, 0, 500);
+	
+	cam.setPosition(x, y, z);
+	//camera.setPosition(ofGetWidth() / 2.0, ofGetHeight() / 2.0, 1000);
+	//camera3.setPosition(ofGetWidth() / 4.0, ofGetHeight() / 2.0, 2000);
 
 	//Setup du UI
 	setupUi();
@@ -50,6 +56,8 @@ void ofApp::setupUi() {
 	boutonOptions.addListener(this, &ofApp::button_pressed_options);
 	guiPrincipal.add(button.setup("Upload"));
 	button.addListener(this, &ofApp::button_pressed);
+	
+
 
 	group_draw.add(color_picker_background);
 	group_draw.add(color_picker_stroke);
@@ -62,6 +70,7 @@ void ofApp::setupUi() {
 	guiJeu.add(boutonCreationObstacle.setup("Ajouter des obstacles"));
 	guiJeu.add(boutonexport.setup("Exporter Labyrinthe en image"));
 	guiJeu.add(button1.setup("Upload"));
+	guiJeu.add(&group_draw);
 	button1.addListener(this, &ofApp::button_pressed);
 	guiJeu.add(boutonExitJeu.setup("Retour"));
 	boutonexport.addListener(this, &ofApp::exportimg);
@@ -169,9 +178,9 @@ void ofApp::setupUi() {
 	guiObstacle.add(ajouterSphere.setup("Ajouter Sphere"));
 	guiObstacle.add(ajouterCylindre.setup("Ajouter Cylindre"));
 	guiObstacle.add(ajouterModele.setup("Ajouter Modele 3d"));
-	guiObstacle.add(absObstacle.setup("Abscisse", ofGetWidth()/2, 0, ofGetWidth()));
-	guiObstacle.add(ordObstacle.setup("Ordonnees", ofGetHeight()/2, 0, ofGetHeight()));
-	guiObstacle.add(zObstacle.setup("Profondeur", 0, -1000, 1000));
+	guiObstacle.add(absObstacle.setup("Abscisse", x, -z, z));
+	guiObstacle.add(ordObstacle.setup("Ordonnees", x, -z, z));
+	guiObstacle.add(zObstacle.setup("Profondeur", x, -z, z));
 	guiObstacle.add(radObstacle.setup("Rayon", 100, 50, 300));
 	guiObstacle.add(heightCylinder.setup("Hauteur cylindre", 100, 50, 300));
 	guiObstacle.add(scaleModel.setup("Scale du modele", 0.5, 0.1, 0.9));
@@ -179,6 +188,19 @@ void ofApp::setupUi() {
 	guiObstacle.add(degYmodel.setup("Orientation Y du modele", 270, 0, 360));
 	guiObstacle.add(colObstacle.setup("color", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
 	guiObstacle.add(sauvegarderPrime3d.setup("Sauvegarder"));
+	guiObstacle.add(gauche.setup("Gauche"));
+	guiObstacle.add(droite.setup("Droite"));
+	guiObstacle.add(haut.setup("Haut"));
+	guiObstacle.add(bas.setup("Bas"));
+	guiObstacle.add(zoomer.setup("Zoomer"));
+	guiObstacle.add(dezoomer.setup("Dezoomer"));
+	gauche.addListener(this, &ofApp::button_cam_gauche);
+	droite.addListener(this, &ofApp::button_cam_droite);
+	haut.addListener(this, &ofApp::button_cam_haut);
+	bas.addListener(this, &ofApp::button_cam_bas);
+	zoomer.addListener(this, &ofApp::button_cam_zoomer);
+	dezoomer.addListener(this, &ofApp::button_cam_dezoomer);
+
 	guiObstacle.add(undoprime.setup("Undo"));
 	guiObstacle.add(redoprime.setup("Redo"));
 	guiObstacle.add(retourajouer.setup("Retour"));
@@ -200,7 +222,7 @@ void ofApp::setupUi() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-
+	cam.setPosition(x, y, z);
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, slider_stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, slider_stroke_weight,color_dessin);
 	ofBackground(color_picker_background);
@@ -209,10 +231,17 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+	ofNoFill();
 
 	renderer.draw();
+	//camera.begin();
 	if (vue == 1)labyrinthe.drawWall();
+	
+	//camera3.begin();
 	if(vue==2)labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
+	
+	//camera3.end();
+	//camera.end();
 	if (vue == 3) {
 		cam.begin();
 		labyrinthe.draw3d(color_picker_stroke, background_color, stroke_weight,color_dessin);
@@ -240,7 +269,7 @@ void ofApp::draw() {
 	}
 	drawUi();
 
-
+	cam.begin();
 	//Ajout d'une nouvelle ligne par paramètres
 	if (newLineNumber > 0) {
 		if (horizontal) {
@@ -289,8 +318,11 @@ void ofApp::draw() {
 	//Edition de lignes finie
 
 	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
-	renderer.drawCursor(listeCurseurs[menu]);
+	
 	//ofBackground(stroke_color);
+
+	cam.end();
+	renderer.drawCursor(listeCurseurs[menu]);
 }
 
 //Le UI est dessiné, selon le menu désiré
@@ -689,4 +721,31 @@ void ofApp::update_app()
 	}
 
 	//this->update();
+}
+
+void ofApp::button_cam_gauche() {
+	x = x - 100;
+	this->update();
+
+}
+void ofApp::button_cam_droite() {
+	x = x + 100;
+	this->update();
+}
+void ofApp::button_cam_haut() {
+	y = y - 100;
+	this->update();
+}
+void ofApp::button_cam_bas() {
+	y = y + 100;
+	this->update();
+}
+void ofApp::button_cam_zoomer() {
+	z = z +500;
+	this->update();
+}
+
+void ofApp::button_cam_dezoomer() {
+	z = z - 500;
+	this->update();
 }

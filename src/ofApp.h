@@ -152,4 +152,26 @@ class ofApp : public ofBaseApp{
 		void buttonretouraedition();
 		void buttonimportimg();
 		void exportimg();
+
+		//camera
+		//ofEasyCam cam;
+		ofEasyCam camera;
+		ofEasyCam camera3;
+		int x, y = 0;
+		int z = 1000;
+		ofxGuiGroup group_draw_camera;
+		ofxButton gauche;
+		ofxButton droite;
+		ofxButton bas;
+		ofxButton haut;
+		ofxButton zoomer;
+		ofxButton dezoomer;
+		void button_cam_gauche();
+		void button_cam_droite();
+		void button_cam_haut();
+		void button_cam_bas();
+		void button_cam_zoomer();
+		void button_cam_dezoomer();
+
+		
 };
