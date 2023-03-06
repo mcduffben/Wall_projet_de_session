@@ -1,4 +1,4 @@
-#include "ofApp.h"
+ï»¿#include "ofApp.h"
 #include "renderer.h"
 
 //--------------------------------------------------------------
@@ -6,20 +6,28 @@ void ofApp::setup(){
 	//cam.setAutoDistance(2000);
 	//camera.setAutoDistance(2000);
 	//camera3.setAutoDistance(2000);
+
 	labyrinthe.setup();
 	renderer.setup();
 	prime.setup();
-
+	ModelDTO ptest ( );
+	img.load("texture.png");
+	ps = new particleSystem(ofPoint(ofGetWidth() / 2, ofGetHeight() - 75), img);
+	player.loadModel("testA.fbx");
+	player.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+	
+	player.setScale(0.2f, 0.2f, 0.2f);
 	ofSetCircleResolution(60);
 	ofSetCylinderResolution(60,60);
+	player.setPosition(0, 0 - ofGetHeight() / 2, 5);
+
 	//Menu : 0 = menu principal, 1 = jeu, 2 = conception, 3 = options, 
-	// 4 = mur basique (Conception), 5 = mur basique par param, 6 = mur basique dessin, 7 = édition 2D, 8 = edition ligne 2d
+	// 4 = mur basique (Conception), 5 = mur basique par param, 6 = mur basique dessin, 7 = Ã©dition 2D, 8 = edition ligne 2d
 	menu = 0;
 	//View : 1 = vue d'un seul mur, 2 = vue de dessus en 2d, 3 = vue en 3d
 	vue = 2;
 	//La liste des curseurs pour chaque menu
 	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5,0,0,0,0,0 };
-
 	//Setup de variables
 	freeDraw, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings = false;
 	modifyingLines, modifyingOneLine, drawSphere, drawCyl, drawMod, wantsimport = false;
@@ -31,6 +39,11 @@ void ofApp::setup(){
 	//camera.setPosition(ofGetWidth() / 2.0, ofGetHeight() / 2.0, 1000);
 	//camera3.setPosition(ofGetWidth() / 4.0, ofGetHeight() / 2.0, 2000);
 
+	cam.setPosition(0, 0, 500);
+	player.stopAllAnimations();
+	player.resetAllAnimations();
+	player.setPositionForAllAnimations(0);
+	player.setRotation(1,1,90,90,0);
 	//Setup du UI
 	setupUi();
 }
@@ -109,7 +122,7 @@ void ofApp::setupUi() {
 	boutonDessinLibre.addListener(this, &ofApp::button_pressed_freeDraw);
 	boutonRetourConceptionMur.addListener(this, &ofApp::button_pressed_retourConception);
 
-	//Setup du UI Conception Mur basique par paramètre
+	//Setup du UI Conception Mur basique par paramÃ¨tre
 	guiCreationMurByParameters.setup("Conception de murs par parametres");
 	guiCreationMurByParameters.add(newLine.setup("Ajouter un nouveau mur"));
 	guiCreationMurByParameters.add(posLine.setup("Deplacer", { ofGetWidth() * .5, ofGetHeight() * .5 }, { 0, 0 }, { ofGetWidth(), ofGetHeight() }));
@@ -225,14 +238,20 @@ void ofApp::update() {
 	cam.setPosition(x, y, z);
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, slider_stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, slider_stroke_weight,color_dessin);
+
+	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, stroke_weight, color_dessin);
+	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, stroke_weight, color_dessin);
 	ofBackground(color_picker_background);
+	if (timeDeFrame > 0)
+	{
+		ps->addParticle();
+		ps->update();
+	}
 	//ofColor();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	ofNoFill();
-
 	renderer.draw();
 	//camera.begin();
 	if (vue == 1)labyrinthe.drawWall();
@@ -244,8 +263,19 @@ void ofApp::draw() {
 	//camera.end();
 	if (vue == 3) {
 		cam.begin();
-		labyrinthe.draw3d(color_picker_stroke, background_color, stroke_weight,color_dessin);
-		prime.draw3d();
+		labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
+     	prime.draw3d();
+
+		player.enableColors();
+		ofSetColor(238, 75, 43);
+		
+		player.drawFaces();
+		if (timeDeFrame > 0)
+		{
+			timeDeFrame--;
+			ps->display();
+
+		}
 		//Ajout d'objet 3d
 		if (drawSphere) {
 			ofSetColor(colObstacle);
@@ -268,9 +298,7 @@ void ofApp::draw() {
 		cam.end();
 	}
 	drawUi();
-
-	cam.begin();
-	//Ajout d'une nouvelle ligne par paramètres
+	//Ajout d'une nouvelle ligne par paramÃ¨tres
 	if (newLineNumber > 0) {
 		if (horizontal) {
 			xLength = lengthLine;
@@ -316,8 +344,7 @@ void ofApp::draw() {
 	oldfloatsliderx = xlines;
 	oldfloatslidery = ylines;
 	//Edition de lignes finie
-
-	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+	//Le curseur est dessinÃ© Ã  la fin pour qu'il soit devant le UI
 	
 	//ofBackground(stroke_color);
 
@@ -325,7 +352,7 @@ void ofApp::draw() {
 	renderer.drawCursor(listeCurseurs[menu]);
 }
 
-//Le UI est dessiné, selon le menu désiré
+//Le UI est dessinÃ©, selon le menu dÃ©sirÃ©
 void ofApp::drawUi() {
 	if (menu == 0) {
 		guiPrincipal.draw();
@@ -367,7 +394,38 @@ void ofApp::drawUi() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+	switch (key)
+	{
+		case OF_KEY_LEFT: // touche â†
+			player.setPosition(player.getPosition().x-5, player.getPosition().y, player.getPosition().z);
+			break;
 
+		case OF_KEY_UP: // touche â†‘
+			player.setPosition(player.getPosition().x, player.getPosition().y + 5, player.getPosition().z);
+			break;
+
+		case OF_KEY_RIGHT: // touche â†’
+			player.setPosition(player.getPosition().x+5, player.getPosition().y , player.getPosition().z);
+			break;
+
+		case OF_KEY_DOWN: // touche â†“
+			player.setPosition(player.getPosition().x, player.getPosition().y-5 , player.getPosition().z);
+			break;
+
+		case 120: // touche x
+	
+			player.setAnimation(0);
+			player.getAnimation(0).play();
+			
+			player.playAllAnimations();
+			ps->origin = player.getPosition();
+			timeDeFrame += 630;
+
+			break;
+		
+	default:
+		break;
+	}
 }
 
 //--------------------------------------------------------------
@@ -654,7 +712,7 @@ void ofApp::image_export(const string name, const string extension) const
 
 void ofApp::button_pressed()
 {
-	// réinitialiser la zone de texte
+	// rÃ©initialiser la zone de texte
 	ofApp::image_export("render", "png");
 
 }
@@ -662,7 +720,7 @@ void ofApp::button_pressed()
 //background et contour
 void ofApp::button_pressed_2()
 {
-	// réinitialiser la zone de texte
+	// rÃ©initialiser la zone de texte
 	if (actif_button) {
 		actif_button = false;
 		button_contour.setName("Activer Contour");
@@ -696,7 +754,7 @@ void ofApp::draw_app() {
 void ofApp::update_app()
 {
 	ofNoFill();
-	// assigner les états courants de l'interface
+	// assigner les Ã©tats courants de l'interface
 	background_color = color_picker_background;
 	stroke_color = color_picker_stroke;
 	stroke_weight = slider_stroke_weight;
@@ -748,4 +806,25 @@ void ofApp::button_cam_zoomer() {
 void ofApp::button_cam_dezoomer() {
 	z = z - 500;
 	this->update();
+}
+}
+void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
+	ofPushMatrix();
+
+	// Translate to location to render vector
+	ofTranslate(loc);
+	ofColor(255);
+	// Call vector heading function to get direction (note that pointing up is a heading of 0) and rotate
+	float angle = (float)atan2(-v.y, v.x);
+	float theta = -1.0 * angle;
+	float heading2D = ofRadToDeg(theta);
+
+	ofRotateZ(heading2D);
+
+	// Calculate length of vector & scale it to be bigger or smaller if necessary
+	float len = v.length() * scayl;
+	// Draw three lines to make an arrow (draw pointing up since we've rotate to the proper direction)
+
+
+	ofPopMatrix();
 }

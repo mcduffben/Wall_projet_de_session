@@ -10,4 +10,14 @@ public:
 	ofxAssimpModelLoader model;
 
 	ModelDTO(int dex, int dey, int sc, ofColor co, ofxAssimpModelLoader mo);
+
+	void moveUP();
+
+	void movedown();
+
+	void moveLeft();
+
+	void moveRight();
+
+	void Collision();
 };

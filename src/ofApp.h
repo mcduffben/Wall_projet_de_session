@@ -5,6 +5,7 @@
 #include "Labyrinthe.h"
 #include "PrimitiveDTO.h"
 #include "ofxAssimpModelLoader.h"
+#include <particleSystem.h>
 
 class ofApp : public ofBaseApp{
 
@@ -15,6 +16,7 @@ class ofApp : public ofBaseApp{
 		Labyrinthe labyrinthe;
 		PrimitiveDTO prime;
 		LineDTO line;
+		ofxAssimpModelLoader player;
 
 		int menu;
 		int vue;
@@ -22,10 +24,10 @@ class ofApp : public ofBaseApp{
 		ofEasyCam cam;
 		ofxAssimpModelLoader transitoryModel;
 		
-		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings;
+		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings, particleEffect;
 		bool modifyingLines, modifyingOneLine, drawSphere,drawCyl,drawMod, wantsimport;
 		int newLineNumber, xLength, yLength;
-		int oldfloatsliderx,oldfloatslidery;
+		int oldfloatsliderx,oldfloatslidery,timeDeFrame;
 
 		ofxPanel guiPrincipal;
 		ofxButton boutonJeu, boutonConception,boutonOptions;
@@ -174,4 +176,10 @@ class ofApp : public ofBaseApp{
 		void button_cam_dezoomer();
 
 		
+
+		void drawVector(ofPoint, ofPoint, float);
+
+
+		particleSystem* ps;
+		ofImage img;
 };
