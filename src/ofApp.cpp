@@ -48,6 +48,8 @@ void ofApp::setupUi() {
 	color_picker_stroke.set("Remplissage ou contour", ofColor(255), ofColor(0, 0), ofColor(255, 255));
 	//Largeur de la ligne de contour 
 	slider_stroke_weight.set("largeur de la ligne", 4.0f, 0.0f, 15.0f);
+	color_dessin.set("Couleur de dessin", ofColor(10), ofColor(0, 0), ofColor(255, 255));
+
 
 	//Setup du UI du menu principal
 	guiPrincipal.setup("Menu Principal");
@@ -63,7 +65,7 @@ void ofApp::setupUi() {
 	group_draw.add(color_picker_background);
 	group_draw.add(color_picker_stroke);
 	group_draw.add(slider_stroke_weight);
-
+	group_draw.add(color_dessin);
 	guiPrincipal.add(&group_draw);
 
 	//Setup du UI Jeu
@@ -209,7 +211,7 @@ void ofApp::setupUi() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-player.getAnimation(0).update();
+
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color);
 	ofBackground(color_picker_background);
@@ -225,7 +227,7 @@ player.getAnimation(0).update();
 void ofApp::draw() {
 	renderer.draw();
 	if (vue == 1)labyrinthe.drawWall();
-	if (vue == 2)labyrinthe.draw(color_picker_stroke, background_color);
+	if(vue==2)labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
 	if (vue == 3) {
 		cam.begin();
 		labyrinthe.draw3d(color_picker_stroke, background_color);

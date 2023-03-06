@@ -87,6 +87,7 @@ class ofApp : public ofBaseApp{
 		//couleur
 		ofParameter<ofColor> color_picker_background;
 		ofParameter<ofColor> color_picker_stroke;
+		ofParameter<ofColor> color_dessin;
 
 		ofColor background_color;
 		float stroke_weight;

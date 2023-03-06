@@ -24,51 +24,53 @@ void Labyrinthe::setup() {
 
 }
 
-void Labyrinthe::update(ofColor color, ofColor back) {
+void Labyrinthe::update(ofColor color, ofColor back, float epais, ofColor dessin) {
 	ofSetColor(color);
 	background.set(back);
-	ofSetLineWidth(10);
+	ofSetLineWidth(epais);
 	posEntreeX = ofGetWindowWidth() / 2;
 	posEntreeY = ofGetWindowHeight() / 2 + hauteur / 2;
 	posSortieX = ofGetWindowWidth() / 2;
 	posSortieY = ofGetWindowHeight() / 2 - hauteur / 2;
 }
 
-void Labyrinthe::draw(ofColor color, ofColor back) {
-	ofSetColor(color);
+void Labyrinthe::draw(ofColor color, ofColor back, float epais, ofColor dessin) {
+	ofSetLineWidth(epais);
+	ofSetColor(dessin);
 	ofFill();
 	ofDrawPlane(ofGetWindowWidth()/2,ofGetWindowHeight()/2,0,epaisseur,hauteur);
-	ofSetColor(255, 255, 255);
+	ofSetColor(color);
 	if (murs2Dbasique.size() > 0) {
 		for (int i = 0; i < murs2Dbasique.size(); i++) {
 			if (murs2Dbasique[i].selected)ofSetColor(0, 0, 175);
-			else ofSetColor(255, 255, 255);
+			else ofSetColor(color);
 			ofDrawLine(murs2Dbasique[i].pinit, murs2Dbasique[i].pfinal);
 		}
 		if (mathPreview.size() > 0) {
 			for (int i = 0; i < mathPreview.size(); i++) {
-				ofSetColor(255, 255, 255);
+				ofSetColor(color);
 				ofDrawLine(mathPreview[i].pinit, mathPreview[i].pfinal);
 			}
 		}
 	}
-	ofSetColor(0,175,0);
+	ofSetColor(color);
 	ofDrawPlane(posEntreeX,posEntreeY, 0, 20, 20);
-	ofSetColor(175, 0, 0);
+	ofSetColor(color);
 	ofDrawPlane(posSortieX, posSortieY, 0, 20, 20);
+	
 }
 
-void Labyrinthe::update3d(ofColor color, ofColor back) {
+void Labyrinthe::update3d(ofColor color, ofColor back, float epais, ofColor dessin) {
 	centre3d.x = 0;// -epaisseur / 2;
 	centre3d.y = 0;// -hauteur / 2;
 	centre3d.z = 0;
 }
-void Labyrinthe::draw3d(ofColor color, ofColor back) {
+void Labyrinthe::draw3d(ofColor color, ofColor back, float epais, ofColor dessin) {
 	ofSetColor(0, 0, 0);
 	ofFill();
 	ofDrawPlane(centre3d.x, centre3d.y, centre3d.z, epaisseur, hauteur);
 	for (int i = 0; i < murs2Dbasique.size(); i++) {
-		ofSetColor(255,255,255);
+		ofSetColor(color);
 		ofPushMatrix();
 		ofRotate(murs2Dbasique[i].angle);
 		ofDrawBox((murs2Dbasique[i].pinit.x+ murs2Dbasique[i].pfinal.x)/2 - ofGetWindowWidth()/2, (murs2Dbasique[i].pfinal.y+murs2Dbasique[i].pinit.y)/2-ofGetWindowHeight()/2, 0, murs2Dbasique[i].largeur, murs2Dbasique[i].epaisseur, murs2Dbasique[i].hauteur);
