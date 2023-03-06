@@ -3,6 +3,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
 	//cam.setAutoDistance(2000);
 	//camera.setAutoDistance(2000);
 	//camera3.setAutoDistance(2000);
@@ -34,6 +35,7 @@ void ofApp::setup(){
 	horizontal = true;
 	oldfloatsliderx = 0;
 	oldfloatslidery = 0;
+
 	
 	cam.setPosition(x, y, z);
 	//camera.setPosition(ofGetWidth() / 2.0, ofGetHeight() / 2.0, 1000);
@@ -235,12 +237,15 @@ void ofApp::setupUi() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
+
 	cam.setPosition(x, y, z);
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, slider_stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, slider_stroke_weight,color_dessin);
 
+
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, stroke_weight, color_dessin);
+
 	ofBackground(color_picker_background);
 	if (timeDeFrame > 0)
 	{
@@ -252,6 +257,10 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+
+	ofNoFill();
+
+
 	renderer.draw();
 	//camera.begin();
 	if (vue == 1)labyrinthe.drawWall();
@@ -298,6 +307,11 @@ void ofApp::draw() {
 		cam.end();
 	}
 	drawUi();
+
+
+	cam.begin();
+	//Ajout d'une nouvelle ligne par param�tres
+
 	//Ajout d'une nouvelle ligne par paramètres
 	if (newLineNumber > 0) {
 		if (horizontal) {
@@ -344,8 +358,14 @@ void ofApp::draw() {
 	oldfloatsliderx = xlines;
 	oldfloatslidery = ylines;
 	//Edition de lignes finie
-	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+
+
+	//Le curseur est dessin� � la fin pour qu'il soit devant le UI
 	
+
+	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+	renderer.drawCursor(listeCurseurs[menu]);
+
 	//ofBackground(stroke_color);
 
 	cam.end();
@@ -781,6 +801,7 @@ void ofApp::update_app()
 	//this->update();
 }
 
+
 void ofApp::button_cam_gauche() {
 	x = x - 100;
 	this->update();
@@ -807,7 +828,6 @@ void ofApp::button_cam_dezoomer() {
 	z = z - 500;
 	this->update();
 }
-}
 void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
 	ofPushMatrix();
 
@@ -827,4 +847,5 @@ void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
 
 
 	ofPopMatrix();
+
 }
