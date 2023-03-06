@@ -159,8 +159,8 @@ class ofApp : public ofBaseApp{
 		//ofEasyCam cam;
 		ofEasyCam camera;
 		ofEasyCam camera3;
-		int x, y = 0;
-		int z = 1000;
+		int x_index, y_index = 0;
+		int z_index = 1000;
 		ofxGuiGroup group_draw_camera;
 		ofxButton gauche;
 		ofxButton droite;

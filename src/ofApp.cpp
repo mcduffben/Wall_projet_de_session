@@ -3,6 +3,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
 	//cam.setAutoDistance(2000);
 	//camera.setAutoDistance(2000);
 	//camera3.setAutoDistance(2000);
@@ -34,12 +35,13 @@ void ofApp::setup(){
 	horizontal = true;
 	oldfloatsliderx = 0;
 	oldfloatslidery = 0;
+
 	
-	cam.setPosition(x, y, z);
+	cam.setPosition(x_index, y_index, z_index);
 	//camera.setPosition(ofGetWidth() / 2.0, ofGetHeight() / 2.0, 1000);
 	//camera3.setPosition(ofGetWidth() / 4.0, ofGetHeight() / 2.0, 2000);
 
-	cam.setPosition(0, 0, 500);
+	//cam.setPosition(0, 0, 500);
 	player.stopAllAnimations();
 	player.resetAllAnimations();
 	player.setPositionForAllAnimations(0);
@@ -191,9 +193,9 @@ void ofApp::setupUi() {
 	guiObstacle.add(ajouterSphere.setup("Ajouter Sphere"));
 	guiObstacle.add(ajouterCylindre.setup("Ajouter Cylindre"));
 	guiObstacle.add(ajouterModele.setup("Ajouter Modele 3d"));
-	guiObstacle.add(absObstacle.setup("Abscisse", x, -z, z));
-	guiObstacle.add(ordObstacle.setup("Ordonnees", x, -z, z));
-	guiObstacle.add(zObstacle.setup("Profondeur", x, -z, z));
+	guiObstacle.add(absObstacle.setup("Abscisse", x_index, -z_index, z_index));
+	guiObstacle.add(ordObstacle.setup("Ordonnees", x_index, -z_index, z_index));
+	guiObstacle.add(zObstacle.setup("Profondeur", x_index, -z_index, z_index));
 	guiObstacle.add(radObstacle.setup("Rayon", 100, 50, 300));
 	guiObstacle.add(heightCylinder.setup("Hauteur cylindre", 100, 50, 300));
 	guiObstacle.add(scaleModel.setup("Scale du modele", 0.5, 0.1, 0.9));
@@ -235,12 +237,15 @@ void ofApp::setupUi() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	cam.setPosition(x, y, z);
+
+	cam.setPosition(x_index, y_index, z_index);
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, slider_stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, slider_stroke_weight,color_dessin);
 
+
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, stroke_weight, color_dessin);
+
 	ofBackground(color_picker_background);
 	if (timeDeFrame > 0)
 	{
@@ -252,6 +257,10 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+
+	ofNoFill();
+
+
 	renderer.draw();
 	//camera.begin();
 	if (vue == 1)labyrinthe.drawWall();
@@ -298,6 +307,11 @@ void ofApp::draw() {
 		cam.end();
 	}
 	drawUi();
+
+
+	//cam.begin();
+	//Ajout d'une nouvelle ligne par param�tres
+
 	//Ajout d'une nouvelle ligne par paramètres
 	if (newLineNumber > 0) {
 		if (horizontal) {
@@ -344,11 +358,17 @@ void ofApp::draw() {
 	oldfloatsliderx = xlines;
 	oldfloatslidery = ylines;
 	//Edition de lignes finie
-	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+
+
+	//Le curseur est dessin� � la fin pour qu'il soit devant le UI
 	
+
+	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+	renderer.drawCursor(listeCurseurs[menu]);
+
 	//ofBackground(stroke_color);
 
-	cam.end();
+	//cam.end();
 	renderer.drawCursor(listeCurseurs[menu]);
 }
 
@@ -781,32 +801,32 @@ void ofApp::update_app()
 	//this->update();
 }
 
+
 void ofApp::button_cam_gauche() {
-	x = x - 100;
+	x_index = x_index - 100;
 	this->update();
 
 }
 void ofApp::button_cam_droite() {
-	x = x + 100;
+	x_index = x_index + 100;
 	this->update();
 }
 void ofApp::button_cam_haut() {
-	y = y - 100;
+	y_index = y_index - 100;
 	this->update();
 }
 void ofApp::button_cam_bas() {
-	y = y + 100;
+	y_index = y_index + 100;
 	this->update();
 }
 void ofApp::button_cam_zoomer() {
-	z = z +500;
+	z_index = z_index +500;
 	this->update();
 }
 
 void ofApp::button_cam_dezoomer() {
-	z = z - 500;
+	z_index = z_index - 500;
 	this->update();
-}
 }
 void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
 	ofPushMatrix();
@@ -827,4 +847,5 @@ void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
 
 
 	ofPopMatrix();
+
 }
