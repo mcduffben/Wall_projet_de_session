@@ -7,28 +7,28 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\CercleDTO.cpp">
+    <ClCompile Include="src\componenet\CercleDTO.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Cylindre.cpp">
+    <ClCompile Include="src\componenet\Cylindre.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Labyrinthe.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\LineDTO.cpp">
+    <ClCompile Include="src\componenet\LineDTO.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ModelDTO.cpp">
+    <ClCompile Include="src\componenet\ModelDTO.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\ofApp.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\PrimitiveDTO.cpp">
+    <ClCompile Include="src\componenet\PrimitiveDTO.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer.cpp">
@@ -76,10 +76,10 @@
     <ClCompile Include="..\..\addons\ofxGui\src\ofxToggle.cpp">
       <Filter>addons\ofxGui\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\effecdeParticule.cpp">
+    <ClCompile Include="src\componenet\effecdeParticule.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\particleSystem.cpp">
+    <ClCompile Include="src\componenet\particleSystem.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,25 +128,25 @@
     <ClInclude Include="src\ofApp.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\CercleDTO.h">
+    <ClInclude Include="src\componenet\CercleDTO.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Cylindre.h">
+    <ClInclude Include="src\componenet\Cylindre.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Labyrinthe.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\LineDTO.h">
+    <ClInclude Include="src\componenet\LineDTO.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\ModelDTO.h">
+    <ClInclude Include="src\componenet\ModelDTO.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ofApp.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\PrimitiveDTO.h">
+    <ClInclude Include="src\componenet\PrimitiveDTO.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer.h">
@@ -326,10 +326,10 @@
     <ClInclude Include="..\..\addons\ofxGui\src\ofxToggle.h">
       <Filter>addons\ofxGui\src</Filter>
     </ClInclude>
-    <ClInclude Include="src\effecdeParticule.h">
+    <ClInclude Include="src\componenet\effecdeParticule.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\particleSystem.h">
+    <ClInclude Include="src\componenet\particleSystem.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

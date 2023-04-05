@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "LineDTO.h"
+#include <componenet/LineDTO.h>
 
 class Labyrinthe
 {

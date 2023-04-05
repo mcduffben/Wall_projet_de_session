@@ -3,9 +3,9 @@
 #include "ofMain.h"
 #include "renderer.h"
 #include "Labyrinthe.h"
-#include "PrimitiveDTO.h"
 #include "ofxAssimpModelLoader.h"
-#include <particleSystem.h>
+#include <componenet/PrimitiveDTO.h>
+#include <componenet/particleSystem.h>
 
 class ofApp : public ofBaseApp{
 
@@ -16,13 +16,15 @@ class ofApp : public ofBaseApp{
 		Labyrinthe labyrinthe;
 		PrimitiveDTO prime;
 		LineDTO line;
-		ofxAssimpModelLoader player;
-
 		int menu;
 		int vue;
 		vector<int> listeCurseurs;
 		ofEasyCam cam;
+		ofEasyCam camtemp;
 		ofxAssimpModelLoader transitoryModel;
+		ofxAssimpModelLoader player;
+		ofMesh mesh;
+		ofTexture tex;
 		
 		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings, particleEffect;
 		bool modifyingLines, modifyingOneLine, drawSphere,drawCyl,drawMod, wantsimport;
@@ -54,6 +56,7 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel guiEdition2d;
 		ofxButton selectElement,selectMultipleElements, editEntreeSortieTerrain, retourEdition2d,modifier1element,modifierplusieurs;
+
 
 		ofxPanel guiObstacle;
 		ofxButton ajouterSphere, ajouterModele, ajouterCylindre, sauvegarderPrime3d, retourajouer, undoprime, redoprime;;

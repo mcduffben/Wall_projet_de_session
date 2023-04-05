@@ -7,19 +7,23 @@ void ofApp::setup(){
 	//cam.setAutoDistance(2000);
 	//camera.setAutoDistance(2000);
 	//camera3.setAutoDistance(2000);
-
+	ofDisableArbTex();
 	labyrinthe.setup();
+	ofSetFrameRate(60);
 	renderer.setup();
 	prime.setup();
 	ModelDTO ptest ( );
 	img.load("texture.png");
 	ps = new particleSystem(ofPoint(ofGetWidth() / 2, ofGetHeight() - 75), img);
-	player.loadModel("testA.fbx");
-	player.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-	
-	player.setScale(0.2f, 0.2f, 0.2f);
+	player.loadModel("model_mesh.obj");
+	//loader.loadModel("COBRA.obj");
+	mesh = player.getMesh(0);
+	tex = player.getTextureForMesh(0);
+	//player.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+	//player.setScale(0.2f, 0.2f, 0.2f);
 	ofSetCircleResolution(60);
 	ofSetCylinderResolution(60,60);
+	//mesh.load("TR_diffuse_final_2.png");
 	player.setPosition(0, 0 - ofGetHeight() / 2, 5);
 
 	//Menu : 0 = menu principal, 1 = jeu, 2 = conception, 3 = options, 
@@ -42,10 +46,7 @@ void ofApp::setup(){
 	//camera3.setPosition(ofGetWidth() / 4.0, ofGetHeight() / 2.0, 2000);
 
 	//cam.setPosition(0, 0, 500);
-	player.stopAllAnimations();
-	player.resetAllAnimations();
-	player.setPositionForAllAnimations(0);
-	player.setRotation(1,1,90,90,0);
+
 	//Setup du UI
 	setupUi();
 }
@@ -268,17 +269,18 @@ void ofApp::draw() {
 	//camera3.begin();
 	if(vue==2)labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
 	
-	//camera3.end();
 	//camera.end();
 	if (vue == 3) {
-		cam.begin();
+				//cam.begin();
+		camtemp.begin();
+		ofEnableDepthTest();
+		player.drawFaces();
 		labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
      	prime.draw3d();
 
-		player.enableColors();
-		ofSetColor(238, 75, 43);
+		//player.enableColors();
 		
-		player.drawFaces();
+		ofSetColor(238, 75, 43);
 		if (timeDeFrame > 0)
 		{
 			timeDeFrame--;
@@ -299,18 +301,13 @@ void ofApp::draw() {
 			ofRotateXDeg(degXmodel);
 			ofRotateYDeg(degYmodel);
 			ofSetColor(colObstacle);
-			transitoryModel.setScale(scaleModel, scaleModel, scaleModel);
-			transitoryModel.drawFaces();
+
 			ofPopMatrix();
 		}
 		//Fin objet 3d
 		cam.end();
 	}
 	drawUi();
-
-
-	//cam.begin();
-	//Ajout d'une nouvelle ligne par param�tres
 
 	//Ajout d'une nouvelle ligne par paramètres
 	if (newLineNumber > 0) {
@@ -355,6 +352,7 @@ void ofApp::draw() {
 			}
 		}
 	}
+
 	oldfloatsliderx = xlines;
 	oldfloatslidery = ylines;
 	//Edition de lignes finie
