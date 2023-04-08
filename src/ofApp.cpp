@@ -411,6 +411,7 @@ void ofApp::setupUi() {
 //--------------------------------------------------------------
 void ofApp::update() {
 
+//	cam.setPosition(x, y, z);
 	cam.setPosition(x_index, y_index, z_index);
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, slider_stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, slider_stroke_weight,color_dessin);
