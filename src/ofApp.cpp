@@ -15,54 +15,6 @@ void ofApp::setup(){
 	tone_mapping_gamma = 2.2f;
 	tone_mapping_toggle = true;
 
-	offset_vertical = 32;
-	offset_horizontal = 32;
-	
-	// dimensions de l'image source
-	image_width = image_source.getWidth();
-	image_height = image_source.getHeight();
-	shader.load("tone_mapping_330_vs.glsl", "tone_mapping_330_fs.glsl");
-	image_destination.allocate(image_source.getWidth(), image_source.getHeight(), OF_IMAGE_COLOR);
-		
-	kernel_type = ConvolutionKernel::identity;
-	kernel_name = "identité";
-
-		// appliquer le filtre de convolution par défaut
-	filter();
-	slider_exposure.set("exposure", tone_mapping_exposure, 0.0f, 5.0f);
-	slider_gamma.set("gamma", tone_mapping_gamma, 0.0f, 5.0f);
-
-	if (tone_mapping_toggle)
-		toggle_tone_mapping.set("aces filmic", true);
-	else
-		toggle_tone_mapping.set("reinhard", false);
-
-	image = image_source;
-	
-	image.resize(image_source.getWidth()/2, image_source.getHeight() / 3);
-	image.update();
-	mTex.enableMipmap();
-	mTex1.enableMipmap();
-
-	mTex = image.getTexture();
-	mTex1 = image.getTexture();
-	
-	mTex.generateMipmap();
-	mTex1.generateMipmap();
-
-	mTex1.setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
-	mTex.setTextureMinMagFilter(GL_LINEAR, GL_LINEAR);
-	plane.set(ofGetWidth(), ofGetHeight());   ///dimensions for width and height in pixels
-	//plane.setPosition(0, 0, 0); /// position in x y z
-	/*
-	// Activer le filtrage bilinéaire pour la texture
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, mTex.getTextureData().textureID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	//glDisable(GL_TEXTURE_2D);*/
-
 	labyrinthe.setup();
 	renderer.setup();
 	prime.setup();
