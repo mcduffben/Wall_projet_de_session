@@ -1,7 +1,5 @@
 ﻿#include "ofApp.h"
 #include "renderer.h"
-#include "../../../../Desktop/OF/of_v0.11.2_vs2017_release/libs/glew/include/GL/glew.h"
-#include "../../../../Desktop/OF/of_v0.11.2_vs2017_release/libs/openFrameworks/graphics/of3dGraphics.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
