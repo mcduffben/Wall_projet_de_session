@@ -7,6 +7,7 @@
 #include "ofxAssimpModelLoader.h"
 #include <particleSystem.h>
 #include <array>
+#include "ofxSkyBox.h"
 
 // énumération des types de kernel de convolution
 enum class ConvolutionKernel
@@ -62,6 +63,7 @@ class ofApp : public ofBaseApp{
 
 	public:
 		
+		ofxSkyBox skybox;
 
 		Renderer renderer;
 		Labyrinthe labyrinthe;
@@ -339,4 +341,8 @@ class ofApp : public ofBaseApp{
 		float oscillate(float time, float frequency, float amplitude);
 		void reset();
 		ofLight light;
+
+		ofEasyCam camTemporaire;
+		///fonction drag and drop pour le critetere 6 de Ramatoulaye
+		void testcritere6();
 };
