@@ -4,6 +4,8 @@
 #include "CercleDTO.h"
 #include "Cylindre.h"
 #include "ModelDTO.h"
+#include "ofxGui.h"
+
 
 class PrimitiveDTO
 {
@@ -46,4 +48,48 @@ public:
 	void saveM(int dex, int dey, int sc, ofColor co, ofxAssimpModelLoader mo);
 
 	void cleanIrrelevantHistorique();
+
+
+
+	//declarer tout ce qui est en lien avec illumination
+	ofxGuiGroup illimunation;
+	ofParameter<bool> gouraud;
+	ofParameter<bool> phong;
+	ofParameter<bool> blinn_phong;
+	bool illum_active = true;
+
+	ofShader shader_gouraud;
+	ofShader shader_phong;
+	ofShader shader_blinn_phong;
+
+	ofVec3f position_gouraud;
+	ofVec3f position_phong;
+	ofVec3f position_blinn_phong;
+
+	float oscillation;
+
+	float scale_gouraud;
+	float scale_phong;
+	float scale_blinn_phong;
+
+	float oscillation_frequency;
+	float oscillation_amplitude;
+
+	float speed_motion;
+
+	float offset_x;
+	float offset_z;
+
+	float delta_x;
+	float delta_z;
+
+	float initial_x;
+	float initial_z;
+
+	float center_x;
+	float center_y;
+	float oscillate(float time, float frequency, float amplitude);
+	void reset();
+	ofLight light;
+
 };

@@ -2,6 +2,57 @@
 
 #include "ofMain.h"
 #include "LineDTO.h"
+#include "ofxGui.h"
+
+// énumération des types de kernel de convolution
+enum class ConvolutionKernel
+{
+	identity,
+	emboss,
+	sharpen,
+	edge_detect,
+	blur
+};
+
+// kernel de convolution (3x3) : identité
+const std::array<float, 9> convolution_kernel_identity
+{
+  0.0f,  0.0f,  0.0f,
+  0.0f,  1.0f,  0.0f,
+  0.0f,  0.0f,  0.0f
+};
+
+// kernel de convolution (3x3) : aiguiser
+const std::array<float, 9> convolution_kernel_sharpen
+{
+  0.0f, -1.0f,  0.0f,
+ -1.0f,  5.0f, -1.0f,
+  0.0f, -1.0f,  0.0f
+};
+
+// kernel de convolution (3x3) : détection de bordure
+const std::array<float, 9> convolution_kernel_edge_detect
+{
+  0.0f,  1.0f,  0.0f,
+  1.0f, -4.0f,  1.0f,
+  0.0f,  1.0f,  0.0f
+};
+
+// kernel de convolution (3x3) : bosseler
+const std::array<float, 9> convolution_kernel_emboss
+{
+ -2.0f, -1.0f,  0.0f,
+ -1.0f,  1.0f,  1.0f,
+  0.0f,  1.0f,  2.0f
+};
+
+// kernel de convolution (3x3) : flou
+const std::array<float, 9> convolution_kernel_blur
+{
+  1.0f / 9.0f,  1.0f / 9.0f,  1.0f / 9.0f,
+  1.0f / 9.0f,  1.0f / 9.0f,  1.0f / 9.0f,
+  1.0f / 9.0f,  1.0f / 9.0f,  1.0f / 9.0f
+};
 
 class Labyrinthe
 {
@@ -37,5 +88,34 @@ public:
 	void drawPreview(int x,int y);
 
 	void importimg(ofImage img);
+
+
+
+	//import des shader
+	//declaration des menus
+	ofxGuiGroup group_tone_mapping;
+	ofParameter<float> slider_exposure;
+	ofParameter<float> slider_gamma;
+	ofParameter<bool> toggle_tone_mapping;
+	float tone_mapping_exposure;
+	float tone_mapping_gamma;
+	bool tone_mapping_toggle;
+	ofShader shader;
+
+	ofxGuiGroup filtrage;
+	ofParameter<bool> linear;
+	ofParameter<bool> nearest;
+	ConvolutionKernel kernel_type;
+	string kernel_name;
+	int image_width;
+	int image_height;
+	ofImage image_destination;
+	ofImage image1;
+	ofImage image_source;
+	void filter();
+	void keyReleased(int key);
+	ofImage image;
+	ofTexture mTex;
+	ofTexture mTex1;
 };
 

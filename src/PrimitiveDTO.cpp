@@ -12,13 +12,96 @@ void PrimitiveDTO::setup() {
 	cylindresManager.push_back(cy);
 	vector<ModelDTO> m;
 	modelManager.push_back(m);
+	
+	//setup des illuminations
+	oscillation_amplitude = 32.0f;
+	oscillation_frequency = 7500.0f;
+	speed_motion = 150.0f;
+	initial_x = 0.0f;
+	initial_z = -100.0f;
+	scale_gouraud = 60.0f;
+	scale_phong = 40.0f;
+	scale_blinn_phong = 0.618f;
+	// initialisation des variables
+	offset_x = initial_x;
+	offset_z = initial_z;
+
+	delta_x = speed_motion;
+	delta_z = speed_motion;
+
+	shader_gouraud.load(
+		"shader/gouraud_330_vs.glsl",
+		"shader/gouraud_330_fs.glsl");
+
+	shader_phong.load(
+		"shader/phong_330_vs.glsl",
+		"shader/phong_330_fs.glsl");
+
+	shader_blinn_phong.load(
+		"shader/blinn_phong_330_vs.glsl",
+		"shader/blinn_phong_330_fs.glsl");
+
+	// initialisation de la scène
+	//reset();
+
+	// transformer la lumière
+
+	light.setGlobalPosition(
+		ofMap(ofGetMouseX() / (float)ofGetWidth(), 0.0f, 1.0f, -ofGetWidth() / 2.0f, ofGetWidth() / 2.0f),
+		ofMap(ofGetMouseY() / (float)ofGetHeight(), 0.0f, 1.0f, -ofGetHeight() / 2.0f, ofGetHeight() / 2.0f),
+		-offset_z );
+
+	// mise à jour d'une valeur numérique animée par un oscillateur
+	float oscillation = oscillate(ofGetElapsedTimeMillis(), oscillation_frequency, oscillation_amplitude) + oscillation_amplitude;
+
+
+	shader_gouraud.begin();
+	shader_gouraud.setUniform3f("color_ambient", 0.1f, 0.1f, 0.1f);
+	shader_gouraud.setUniform3f("color_diffuse", 0.6f, 0.6f, 0.0f);
+	shader_gouraud.setUniform3f("color_specular", 1.0f, 1.0f, 0.0f);
+	shader_gouraud.setUniform1f("brightness", 10);
+	shader_gouraud.setUniform3f("light_position", light.getGlobalPosition());
+	shader_gouraud.end();
+
+	shader_phong.begin();
+	shader_phong.setUniform3f("color_ambient", 0.1f, 0.1f, 0.1f);
+	shader_phong.setUniform3f("color_diffuse", 0.6f, 0.0f, 0.6f);
+	shader_phong.setUniform3f("color_specular", 1.0f, 1.0f, 0.0f);
+	shader_phong.setUniform1f("brightness", 10);
+	shader_phong.setUniform3f("light_position", light.getGlobalPosition());
+	shader_phong.end();
+
+
+	shader_blinn_phong.begin();
+	shader_blinn_phong.setUniform3f("color_ambient", 0.1f, 0.1f, 0.1f);
+	shader_blinn_phong.setUniform3f("color_diffuse", 0.0f, 0.6f, 0.6f);
+	shader_blinn_phong.setUniform3f("color_specular", 1.0f, 1.0f, 0.0f);
+	shader_blinn_phong.setUniform1f("brightness", 10);
+	shader_blinn_phong.setUniform3f("light_position", light.getGlobalPosition());
+	shader_blinn_phong.end();
+
+	//setup de ton menu
+	//Illumination
+	gouraud.set("Gouraud", false);
+	phong.set("Phong", false);
+	blinn_phong.set("Blinn_Phong", false);
+	illimunation.setup("Illumination");
+	illimunation.add(gouraud);
+	illimunation.add(phong);
+	illimunation.add(blinn_phong);
+
 }
+float PrimitiveDTO::oscillate(float time, float frequency, float amplitude)
+{
+	return sinf(time * 2.0f * PI / frequency) * amplitude;
+}
+
 void PrimitiveDTO::draw() {
+
 	for (int i = 0; i < cerclesManager[navCe].size(); i++) {
 		ofSetColor(cerclesManager[navCe][i].couleur);
 		ofDrawCircle(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
 	}
-
 	for (int i = 0; i < cylindresManager[navCy].size(); i++) {
 		ofSetColor(cylindresManager[navCy][i].couleur);
 		ofDrawCircle(cylindresManager[navCy][i].position, cylindresManager[navCy][i].rayon);
@@ -32,15 +115,92 @@ void PrimitiveDTO::draw() {
 
 void PrimitiveDTO::draw3d() {
 
+	//activation des illuminations
+
+	//vecteur des spheres qu on itere en dessinant chaque sphere
+
 	for (int i = 0; i < cerclesManager[navCe].size(); i++) {
-		ofSetColor(cerclesManager[navCe][i].couleur);
-		ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
+		if (phong or gouraud or blinn_phong) {
+			ofDisableAlphaBlending();
+			ofDisableArbTex();
+			ofEnableLighting();
+			// activer la lumière dynamique
+			light.enable();
+			ofFloatColor c = cerclesManager[navCe][i].couleur;
+			if (gouraud) {
+				shader_gouraud.begin();
+				shader_gouraud.setUniform3f("color_diffuse", c.getNormalized().r, c.getNormalized().g, c.getNormalized().b);
+			}
+			else if (phong) {
+				shader_phong.begin();
+				shader_phong.setUniform3f("color_diffuse", c.getNormalized().r, c.getNormalized().g, c.getNormalized().b);
+			}else{
+				shader_blinn_phong.begin();
+				shader_blinn_phong.setUniform3f("color_diffuse", c.getNormalized().r, c.getNormalized().g, c.getNormalized().b);
+			}
+			
+			// dessiner un cube
+			ofEnableDepthTest();
+			//ofSetColor(cerclesManager[navCe][i].couleur);
+			ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
+			ofDisableDepthTest();
+			if (gouraud)
+				shader_gouraud.end();
+			else if (phong)
+				shader_phong.end();
+			else
+				shader_blinn_phong.end();
+		}
+		else {
+			ofSetColor(cerclesManager[navCe][i].couleur);
+			ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
+		}
+
 	}
+	//vecteur des spheres qu on itere en dessinant chaque cylindres
 
 	for (int i = 0; i < cylindresManager[navCy].size(); i++) {
-		ofSetColor(cylindresManager[navCy][i].couleur);
+		if (phong or gouraud or blinn_phong) {
+			ofDisableAlphaBlending();
+			ofDisableArbTex();
+			ofEnableLighting();
+			// activer la lumière dynamique
+			light.enable();
+			ofFloatColor c = cylindresManager[navCy][i].couleur;
+			if (gouraud) {
+				shader_gouraud.begin();
+				shader_gouraud.setUniform3f("color_diffuse", c.getNormalized().r, c.getNormalized().g, c.getNormalized().b);
+			}
+			else if (phong) {
+				shader_phong.begin();
+				shader_phong.setUniform3f("color_diffuse", c.getNormalized().r, c.getNormalized().g, c.getNormalized().b);
+			}
+			else {
+				shader_blinn_phong.begin();
+				shader_blinn_phong.setUniform3f("color_diffuse", c.getNormalized().r, c.getNormalized().g, c.getNormalized().b);
+			}
+
+			// dessiner un cube
+			ofEnableDepthTest();
+
+		//ofSetColor(cylindresManager[navCy][i].couleur);
 		ofDrawCylinder(cylindresManager[navCy][i].position, cylindresManager[navCy][i].rayon, cylindresManager[navCy][i].height);
+		ofDisableDepthTest();
+		if (gouraud)
+			shader_gouraud.end();
+		else if (phong)
+			shader_phong.end();
+		else
+			shader_blinn_phong.end();
+		}
+		else {
+			ofSetColor(cylindresManager[navCy][i].couleur);
+			ofDrawCylinder(cylindresManager[navCy][i].position, cylindresManager[navCy][i].rayon, cylindresManager[navCy][i].height);
+		}
 	}
+
+
+	//vecteur des spheres qu on itere en dessinant chaque modele
 
 	for (int i = 0; i < modelManager[navM].size(); i++) {
 		ofPushMatrix();
@@ -50,6 +210,11 @@ void PrimitiveDTO::draw3d() {
 		modelManager[navM][i].model.drawFaces();
 		ofPopMatrix();
 	}
+
+	//desactivation des illuminations
+
+
+	//draw menu illumination
 }
 
 void PrimitiveDTO::undoCe() {
