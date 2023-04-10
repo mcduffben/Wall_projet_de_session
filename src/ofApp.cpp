@@ -1,7 +1,5 @@
 ﻿#include "ofApp.h"
 #include "renderer.h"
-#include "../../../../Desktop/OF/of_v0.11.2_vs2017_release/libs/glew/include/GL/glew.h"
-#include "../../../../Desktop/OF/of_v0.11.2_vs2017_release/libs/openFrameworks/graphics/of3dGraphics.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -631,11 +629,11 @@ void ofApp::draw() {
 		}
 		
 	}
-	/*
+	
 	else if (vue == 2) {
 		labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
 		image_destination.draw(offset_horizontal, offset_vertical, image1.getWidth(), image1.getHeight());
-	}*/
+	}
 		
 	
 	//camera3.end();

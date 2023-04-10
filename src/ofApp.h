@@ -297,7 +297,7 @@ class ofApp : public ofBaseApp{
 		ofImage image1;
 		ofImage image_source;
 		void filter();
-		bool tone = true;
+		bool tone = false;
 		ofTexture mTex;
 		ofTexture mTex1;
 		ofTrueTypeFont myfont;
