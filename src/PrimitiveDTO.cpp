@@ -12,13 +12,18 @@ void PrimitiveDTO::setup() {
 	cylindresManager.push_back(cy);
 	vector<ModelDTO> m;
 	modelManager.push_back(m);
+
+	//setup des illuminations
+	//setup de ton menu
 }
+
+
 void PrimitiveDTO::draw() {
+
 	for (int i = 0; i < cerclesManager[navCe].size(); i++) {
 		ofSetColor(cerclesManager[navCe][i].couleur);
 		ofDrawCircle(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
 	}
-
 	for (int i = 0; i < cylindresManager[navCy].size(); i++) {
 		ofSetColor(cylindresManager[navCy][i].couleur);
 		ofDrawCircle(cylindresManager[navCy][i].position, cylindresManager[navCy][i].rayon);
@@ -32,15 +37,23 @@ void PrimitiveDTO::draw() {
 
 void PrimitiveDTO::draw3d() {
 
+	//activation des illuminations
+
+	//vecteur des spheres qu on itere en dessinant chaque sphere
+
 	for (int i = 0; i < cerclesManager[navCe].size(); i++) {
 		ofSetColor(cerclesManager[navCe][i].couleur);
 		ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
 	}
+	//vecteur des spheres qu on itere en dessinant chaque cylindres
 
 	for (int i = 0; i < cylindresManager[navCy].size(); i++) {
 		ofSetColor(cylindresManager[navCy][i].couleur);
 		ofDrawCylinder(cylindresManager[navCy][i].position, cylindresManager[navCy][i].rayon, cylindresManager[navCy][i].height);
 	}
+
+
+	//vecteur des spheres qu on itere en dessinant chaque modele
 
 	for (int i = 0; i < modelManager[navM].size(); i++) {
 		ofPushMatrix();
@@ -50,6 +63,11 @@ void PrimitiveDTO::draw3d() {
 		modelManager[navM][i].model.drawFaces();
 		ofPopMatrix();
 	}
+
+	//desactivation des illuminations
+
+
+	//draw menu illumination
 }
 
 void PrimitiveDTO::undoCe() {

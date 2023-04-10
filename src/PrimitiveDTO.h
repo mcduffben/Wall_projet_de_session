@@ -46,4 +46,8 @@ public:
 	void saveM(int dex, int dey, int sc, ofColor co, ofxAssimpModelLoader mo);
 
 	void cleanIrrelevantHistorique();
+
+
+
+	//declarer tout ce qui est en lien avec illumination
 };

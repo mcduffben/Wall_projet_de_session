@@ -3,6 +3,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	camTemporaire.setPosition(0, 0, 0);
 	myfont.load("times-new-roman.ttf", 32);
 	ofSetBackgroundColor(229, 235, 231);
 //	ofEnableDepthTest();
@@ -92,10 +93,6 @@ void ofApp::setup(){
 	player.setRotation(1,1,90,90,0);
 	//Setup du UI
 	setupUi();
-	
-	if (tone)
-		this->draw();
-
 
 	//Illuminations
 	ofSetBackgroundColor(0);
@@ -629,24 +626,35 @@ void ofApp::draw() {
 		}
 		
 	}
-	/*
+	
 	else if (vue == 2) {
 		labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
 		image_destination.draw(offset_horizontal, offset_vertical, image1.getWidth(), image1.getHeight());
-	}*/
+	}
 		
 	
 	//camera3.end();
 	//camera.end();
 	if (vue == 3) {
-		cam.begin();
-		labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
-     	prime.draw3d();
+		//cam.begin();
+		camTemporaire.begin();
+		skybox.draw();
+
+
+		//labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
+
+
+
+		//prime se trouve dans PrimivitiveDTO .h/.cpp
+		//toutes les objets 3d sont affichées ici
+     	///prime.draw3d();
+		//fin des objets 3d
+
 		
-		player.enableColors();
+		//player.enableColors();
 		ofSetColor(238, 75, 43);
 		
-		player.drawFaces();
+		//player.drawFaces();
 		if (timeDeFrame > 0)
 		{
 			timeDeFrame--;
@@ -673,7 +681,9 @@ void ofApp::draw() {
 			ofPopMatrix();
 		}
 		//Fin objet 3d
-		cam.end();
+		// 
+		camTemporaire.end();
+		//cam.end();
 	}
 	drawUi();
 
@@ -957,7 +967,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 		image_source.update();
 		
 		}
-		this->setup();
+		this->testcritere6();
 			
 
 	}
@@ -1441,3 +1451,48 @@ void ofApp::filter()
 }
 //filtrage
 	
+void ofApp::testcritere6() {
+	tone_mapping_exposure = 1.0f;
+	tone_mapping_gamma = 2.2f;
+	tone_mapping_toggle = true;
+
+	offset_vertical = 32;
+	offset_horizontal = 32;
+
+	// dimensions de l'image source
+	image_width = image_source.getWidth();
+	image_height = image_source.getHeight();
+	shader.load("tone_mapping_330_vs.glsl", "tone_mapping_330_fs.glsl");
+	image_destination.allocate(image_source.getWidth(), image_source.getHeight(), OF_IMAGE_COLOR);
+
+	kernel_type = ConvolutionKernel::identity;
+	kernel_name = "identité";
+
+	// appliquer le filtre de convolution par défaut
+	filter();
+	slider_exposure.set("exposure", tone_mapping_exposure, 0.0f, 5.0f);
+	slider_gamma.set("gamma", tone_mapping_gamma, 0.0f, 5.0f);
+
+	if (tone_mapping_toggle)
+		toggle_tone_mapping.set("aces filmic", true);
+	else
+		toggle_tone_mapping.set("reinhard", false);
+
+	image = image_source;
+
+	image.resize(image_source.getWidth() / 2, image_source.getHeight() / 3);
+	image.update();
+	mTex.enableMipmap();
+	mTex1.enableMipmap();
+
+	mTex = image.getTextureReference();
+	mTex1 = image.getTexture();
+
+	mTex.generateMipmap();
+	mTex1.generateMipmap();
+
+	mTex1.setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
+	mTex.setTextureMinMagFilter(GL_LINEAR, GL_LINEAR);
+	plane.set(ofGetWidth() * 1.5, ofGetHeight() * 1.5);   ///dimensions for width and height in pixels
+	plane.setPosition(0, 0, 0); /// position in x y z
+}

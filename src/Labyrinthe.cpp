@@ -22,6 +22,12 @@ void Labyrinthe::setup() {
 
 	hauteurMur3d = 100;
 
+
+	//setup de tes menus
+	
+	
+	//set up de tes shader
+
 }
 
 void Labyrinthe::update(ofColor color, ofColor back, float epais, ofColor dessin) {
@@ -79,6 +85,8 @@ void Labyrinthe::draw3d(ofColor color, ofColor back, float epais, ofColor dessin
 }
 
 void Labyrinthe::drawWall() {
+
+
 	int largeur;
 	LineDTO l({ 0,0 }, { 0, 0 }, false);
 	for (int i = 0; i < murs2Dbasique.size(); i++) {
@@ -90,14 +98,30 @@ void Labyrinthe::drawWall() {
 	piE = {ofGetWindowWidth()/2.0f-l.largeur,ofGetWindowHeight()/2.0f-l.hauteur};
 	pfE = {piE.x+l.largeur,piE.y+l.hauteur};
 	ofSetColor(255, 255, 255);
+
+	//ici on dessine le mur
 	ofDrawLine(piE, { piE.x,pfE.y });
 	ofDrawLine(piE, { pfE.x,piE.y });
 	ofDrawLine(pfE, { piE.x,pfE.y });
 	ofDrawLine(pfE, { pfE.x,piE.y });
 
+
 	if (l.hasImage) {
+
+		//shader.begin()
+
+		//l.img te donne l'immage qui est actuellement affichée
+
+
 		l.img.draw((piE.x + 5), (piE.y + 5), l.largeur -10, l.hauteur-10);
+
+		//shader.end()
+
 	}
+
+
+
+	//menu.draw()
 }
 
 

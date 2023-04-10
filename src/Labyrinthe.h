@@ -37,5 +37,10 @@ public:
 	void drawPreview(int x,int y);
 
 	void importimg(ofImage img);
+
+
+
+	//import des shader
+	//declaration des menus
 };
 
