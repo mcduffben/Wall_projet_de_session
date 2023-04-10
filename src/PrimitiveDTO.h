@@ -91,5 +91,10 @@ public:
 	float oscillate(float time, float frequency, float amplitude);
 	void reset();
 	ofLight light;
+	ofSpherePrimitive sphere;
+	//TEXTURE PROCEDURALE
+	ofParameter<bool> generer_texture = false;
+	ofTexture texture;
+	
 
 };

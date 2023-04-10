@@ -3,10 +3,10 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	
 	camTemporaire.setPosition(0, 0, 0);
 	myfont.load("times-new-roman.ttf", 32);
 	ofSetBackgroundColor(229, 235, 231);
-	ofDisableArbTex();
 	
 	
 	labyrinthe.setup();
@@ -48,6 +48,9 @@ void ofApp::setup(){
 	//Setup du UI
 	setupUi();
 
+	ofSetVerticalSync(true); // Enable vertical sync to limit the framerate
+	//ofEnableDepthTest(); // Enable depth testing for proper rendering of 3D objects
+	ofDisableArbTex();
 	
 }
 
@@ -79,7 +82,51 @@ void ofApp::setupUi() {
 	group_draw.add(slider_stroke_weight);
 	group_draw.add(color_dessin);
 	guiPrincipal.add(&group_draw);
+	
+	//PBR
+	is_key_press_up = false;
+	is_key_press_down = false;
+	is_key_press_left = false;
+	is_key_press_right = false;
+	is_key_press_q = false;
+	is_key_press_e = false;
+	pbr.setup();
+	reset();
+	pbr_active.setName("PBR");
+	guiPrincipal.add(pbr_active);
+	gui_material.setup("pbr material");
+	// interface pour les couleurs du matériau
+	group_material_color.setup("color");
+	group_material_color.add(color_picker_ambient);
+	group_material_color.add(color_picker_diffuse);
+	group_material_color.add(color_picker_specular);
+	gui_material.add(&group_material_color);
+	// interface pour les facteurs numériques du matériau
+	group_material_factor.setup("factor");
+	group_material_factor.add(slider_metallic);
+	group_material_factor.add(slider_roughness);
+	group_material_factor.add(slider_occlusion);
+	group_material_factor.add(slider_brightness);
+	group_material_factor.add(slider_fresnel_ior);
+	gui_material.add(&group_material_factor);
+	// interface pour les paramètres de la lumière
+	group_light.setup("light");
+	group_light.add(color_picker_light_color);
+	group_light.add(slider_light_intensity);
+	group_light.add(toggle_light_motion);
+	gui_material.add(&group_light);
+	// interface pour les paramètres de mappage tonal
+	group_tone_mapping.setup("tone mapping");
+	group_tone_mapping.add(slider_exposure);
+	group_tone_mapping.add(slider_gamma);
+	group_tone_mapping.add(toggle_tone_mapping);
+	gui_material.add(&group_tone_mapping);
 
+	//button_reset.setup("reset");
+	//button_reset.addListener(this, &ofApp::button_reset_pressed);
+	
+	guiPrincipal.add(&gui_material);
+	
 	//Setup du UI Jeu
 	guiJeu.setup("Jouer");
 	guiJeu.add(boutonCreationObstacle.setup("Ajouter des obstacles"));
@@ -91,6 +138,7 @@ void ofApp::setupUi() {
 	boutonexport.addListener(this, &ofApp::exportimg);
 	boutonCreationObstacle.addListener(this, &ofApp::button_pressed_ajouterobstacle);
 	boutonExitJeu.addListener(this, &ofApp::button_pressed_exit);
+	guiJeu.add(&labyrinthe.mapping);
 	
 
 	//Setup du UI Conception
@@ -206,7 +254,7 @@ void ofApp::setupUi() {
 	guiObstacle.add(sauvegarderPrime3d.setup("Sauvegarder"));
 	
 	guiObstacle.add(&prime.illimunation);
-
+	
 	/*
 	guiObstacle.add(gauche.setup("Gauche"));
 	guiObstacle.add(droite.setup("Droite"));
@@ -242,6 +290,7 @@ void ofApp::setupUi() {
 	affichageMur.add(&labyrinthe.group_tone_mapping);
 	
 	affichageMur.add(&labyrinthe.filtrage);
+	
 }
 
 //--------------------------------------------------------------
@@ -261,27 +310,83 @@ void ofApp::update() {
 		ps->addParticle();
 		ps->update();
 	}
+
+	if (pbr_active) {
+		time_current = ofGetElapsedTimef();
+		time_elapsed = time_current - time_last;
+		time_last = time_current;
+
+		if (is_key_press_up)
+			pbr.offset_z += pbr.delta_z * time_elapsed;
+		if (is_key_press_down)
+			pbr.offset_z -= pbr.delta_z * time_elapsed;
+		if (is_key_press_left)
+			pbr.offset_x += pbr.delta_x * time_elapsed;
+		if (is_key_press_right)
+			pbr.offset_x -= pbr.delta_x * time_elapsed;
+		if (is_key_press_q)
+			pbr.rotation_y += pbr.delta_y * time_elapsed;
+		if (is_key_press_e)
+			pbr.rotation_y -= pbr.delta_y * time_elapsed;
+
+		pbr.material_color_ambient = color_picker_ambient;
+		pbr.material_color_diffuse = color_picker_diffuse;
+		pbr.material_color_specular = color_picker_specular;
+
+		pbr.material_metallic = slider_metallic;
+		pbr.material_roughness = slider_roughness;
+		pbr.material_occlusion = slider_occlusion;
+		pbr.material_brightness = slider_brightness;
+
+		pbr.material_fresnel_ior = slider_fresnel_ior;
+
+		pbr.light_color = color_picker_light_color;
+		pbr.light_intensity = slider_light_intensity;
+		pbr.light_motion = toggle_light_motion;
+
+		pbr.tone_mapping_exposure = slider_exposure;
+		pbr.tone_mapping_gamma = slider_gamma;
+		pbr.tone_mapping_toggle = toggle_tone_mapping;
+
+		if (pbr.tone_mapping_toggle)
+			toggle_tone_mapping.set("aces filmic", true);
+		else
+			toggle_tone_mapping.set("reinhard", false);
+
+		pbr.update();
+		
+	}
 	
+	
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+	
+	
 	ofNoFill();
 	renderer.draw();
 	//camera.begin();
 	if (vue == 1){
+
 		labyrinthe.drawWall();
 		
 	}
 	else if (vue == 2) {
+		
 		labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
 		}
 	
 	if (vue == 3) {
 		cam.begin();
+		ofPushMatrix();
+
+		//image_mapping.getTextureReference().bind();
+		//ofEnableDepthTest();
 		labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
-
-
+		//ofDisableDepthTest();
+		//image_mapping.getTextureReference().unbind();
 
 		//prime se trouve dans PrimivitiveDTO .h/.cpp
 		//toutes les objets 3d sont affichées ici
@@ -322,6 +427,7 @@ void ofApp::draw() {
 		//Fin objet 3d
 		// 
 		//camTemporaire.end();
+		ofPopMatrix();
 		cam.end();
 	}
 	drawUi();
@@ -389,6 +495,9 @@ void ofApp::draw() {
 	//cam.end();
 	renderer.drawCursor(listeCurseurs[menu]);
 	//ofDisableDepthTest();
+	if(pbr_active)
+		pbr.draw();
+	
 }
 
 //Le UI est dessiné, selon le menu désiré
@@ -433,6 +542,53 @@ void ofApp::drawUi() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+	if (pbr_active) {
+		switch (key)
+		{
+		case 97:  // touche a
+			is_key_press_left = true;
+			break;
+
+		case 100: // touche d
+			is_key_press_right = true;
+			break;
+
+		case 101: // touche q
+			is_key_press_q = true;
+			break;
+
+		case 113: // touche e
+			is_key_press_e = true;
+			break;
+
+		case 115: // touche s
+			is_key_press_down = true;
+			break;
+
+		case 119: // touche w
+			is_key_press_up = true;
+			break;
+
+		case OF_KEY_LEFT:  // touche ←
+			is_key_press_left = true;
+			break;
+
+		case OF_KEY_UP:    // touche ↑
+			is_key_press_up = true;
+			break;
+
+		case OF_KEY_RIGHT: // touche →
+			is_key_press_right = true;
+			break;
+
+		case OF_KEY_DOWN:  // touche ↓
+			is_key_press_down = true;
+			break;
+
+		default:
+			break;
+		}
+	}else{
 	switch (key)
 	{
 		case OF_KEY_LEFT: // touche ←
@@ -465,10 +621,102 @@ void ofApp::keyPressed(int key) {
 	default:
 		break;
 	}
+	}
 }
+//pbr
+
+void ofApp::reset()
+{
+	pbr.reset();
+
+	color_picker_ambient.set("ambient", pbr.material_color_ambient, ofColor(0, 0), ofColor(255, 255));
+	color_picker_diffuse.set("diffuse", pbr.material_color_diffuse, ofColor(0, 0), ofColor(255, 255));
+	color_picker_specular.set("specular", pbr.material_color_specular, ofColor(0, 0), ofColor(255, 255));
+
+	slider_metallic.set("metallic", pbr.material_metallic, 0.0f, 1.0f);
+	slider_roughness.set("roughness", pbr.material_roughness, 0.0f, 1.0f);
+	slider_occlusion.set("occlusion", pbr.material_occlusion, 0.0f, 5.0f);
+	slider_brightness.set("brightness", pbr.material_brightness, 0.0f, 5.0f);
+
+	slider_fresnel_ior.set("fresnel ior", pbr.material_fresnel_ior, glm::vec3(0.0f), glm::vec3(1.0f));
+
+	color_picker_light_color.set("color", pbr.light_color, ofColor(0, 0), ofColor(255, 255));
+	slider_light_intensity.set("intensity", pbr.light_intensity, 0.0f, 10.0f);
+
+	toggle_light_motion.set("motion", pbr.light_motion);
+
+	slider_exposure.set("exposure", 1.0f, 0.0f, 5.0f);
+	slider_gamma.set("gamma", 2.2f, 0.0f, 5.0f);
+
+	if (pbr.tone_mapping_toggle)
+		toggle_tone_mapping.set("aces filmic", true);
+	else
+		toggle_tone_mapping.set("reinhard", false);
+}
+
+
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
+	if (pbr_active) {
+		switch (key)
+		{
+		case 97:  // touche a
+			is_key_press_left = false;
+			break;
+
+		case 100: // touche d
+			is_key_press_right = false;
+			break;
+
+		case 101: // touche q
+			is_key_press_q = false;
+			break;
+
+		case 109: // touche m
+			toggle_light_motion = !toggle_light_motion;
+			ofLog() << "<toggle light motion: " << toggle_light_motion << ">";
+			break;
+
+		case 113: // touche e
+			is_key_press_e = false;
+			break;
+
+		case 114: // touche r
+			reset();
+			ofLog() << "<reset renderer>";
+			break;
+
+		case 115: // touche s
+			is_key_press_down = false;
+			break;
+
+		
+		
+		case 119: // touche w
+			is_key_press_up = false;
+			break;
+
+		case OF_KEY_LEFT:  // touche ←
+			is_key_press_left = false;
+			break;
+
+		case OF_KEY_UP:    // touche ↑
+			is_key_press_up = false;
+			break;
+
+		case OF_KEY_RIGHT: // touche →
+			is_key_press_right = false;
+			break;
+
+		case OF_KEY_DOWN:  // touche ↓
+			is_key_press_down = false;
+			break;
+
+		default:
+			break;
+		}
+	}
 	labyrinthe.keyReleased(key);
 	
 }

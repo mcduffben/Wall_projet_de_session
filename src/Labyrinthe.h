@@ -117,5 +117,18 @@ public:
 	ofImage image;
 	ofTexture mTex;
 	ofTexture mTex1;
+	ofImage image_mapping;
+
+	ofxGuiGroup mapping;
+	ofParameter<bool> normal_mapping;
+	ofParameter<bool> displa_mapping;
+	ofMesh mesh;
+	ofMesh mesh1;
+	ofEasyCam cam;
+	ofPlanePrimitive plane;
+	void displacement_map();
+
+	ofShader normalMapShader;
+	
 };
 

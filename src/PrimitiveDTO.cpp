@@ -89,7 +89,30 @@ void PrimitiveDTO::setup() {
 	illimunation.add(gouraud);
 	illimunation.add(phong);
 	illimunation.add(blinn_phong);
+	generer_texture.setName("Generer texture");
+	illimunation.add(generer_texture);
+	//sphere.mapTexCoordsFromTexture(texture);
+	 // Créer une texture
+	int w = 512;
+	int h = 512;
+	texture.allocate(w, h, GL_RGBA);
 
+	// Générer une texture procédurale
+	unsigned char* pixels = new unsigned char[w * h * 4];
+	float scale = 0.01;
+	for (int y = 0; y < h; y++) {
+		for (int x = 0; x < w; x++) {
+			float noiseValue = ofNoise(x * scale * x, y * 2 * scale);
+			int index = (y * w + x) * 4;
+			pixels[index] = 255 * noiseValue;
+			pixels[index + 1] = 255 * noiseValue;
+			pixels[index + 2] = 255 * noiseValue;
+			pixels[index + 3] = 255;
+		}
+	}
+	texture.loadData(pixels, w, h, GL_RGBA);
+	delete[] pixels;
+	sphere.mapTexCoordsFromTexture(texture);
 }
 float PrimitiveDTO::oscillate(float time, float frequency, float amplitude)
 {
@@ -97,10 +120,13 @@ float PrimitiveDTO::oscillate(float time, float frequency, float amplitude)
 }
 
 void PrimitiveDTO::draw() {
+	
 
 	for (int i = 0; i < cerclesManager[navCe].size(); i++) {
 		ofSetColor(cerclesManager[navCe][i].couleur);
-		ofDrawCircle(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
+		sphere.setPosition(cerclesManager[navCe][i].position);
+		sphere.set(cerclesManager[navCe][i].rayon, cerclesManager[navCe][i].rayon);
+		sphere.draw();
 	}
 	for (int i = 0; i < cylindresManager[navCy].size(); i++) {
 		ofSetColor(cylindresManager[navCy][i].couleur);
@@ -116,9 +142,11 @@ void PrimitiveDTO::draw() {
 void PrimitiveDTO::draw3d() {
 
 	//activation des illuminations
-
+	if(generer_texture){
+	texture.bind();
+	}
 	//vecteur des spheres qu on itere en dessinant chaque sphere
-
+	ofTranslate(ofGetWidth() / 4, ofGetHeight() / 4);
 	for (int i = 0; i < cerclesManager[navCe].size(); i++) {
 		if (phong or gouraud or blinn_phong) {
 			ofDisableAlphaBlending();
@@ -142,7 +170,14 @@ void PrimitiveDTO::draw3d() {
 			// dessiner un cube
 			ofEnableDepthTest();
 			//ofSetColor(cerclesManager[navCe][i].couleur);
-			ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
+			ofSetColor(cerclesManager[navCe][i].couleur);
+			sphere.setPosition(cerclesManager[navCe][i].position);
+			sphere.set(cerclesManager[navCe][i].rayon, cerclesManager[navCe][i].rayon);
+			sphere.mapTexCoordsFromTexture(texture);
+			
+			sphere.draw();
+			
+			//ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
 			ofDisableDepthTest();
 			if (gouraud)
 				shader_gouraud.end();
@@ -153,9 +188,15 @@ void PrimitiveDTO::draw3d() {
 		}
 		else {
 			ofSetColor(cerclesManager[navCe][i].couleur);
-			ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
+			
+			ofSetColor(cerclesManager[navCe][i].couleur);
+			sphere.setPosition(cerclesManager[navCe][i].position);
+			sphere.set(cerclesManager[navCe][i].rayon, cerclesManager[navCe][i].rayon);
+			sphere.mapTexCoordsFromTexture(texture);
+			sphere.draw();
 		}
 
+		
 	}
 	//vecteur des spheres qu on itere en dessinant chaque cylindres
 
@@ -209,11 +250,15 @@ void PrimitiveDTO::draw3d() {
 		ofSetColor(modelManager[navM][i].col);
 		modelManager[navM][i].model.drawFaces();
 		ofPopMatrix();
+
+
 	}
 
 	//desactivation des illuminations
-
-
+	if (generer_texture) {
+		texture.unbind();
+	}
+	
 	//draw menu illumination
 }
 

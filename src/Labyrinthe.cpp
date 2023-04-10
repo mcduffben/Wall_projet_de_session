@@ -2,6 +2,8 @@
 #include <math.h>
 
 void Labyrinthe::setup() {
+	//mesh.set(ofGetWidth()*0.5, ofGetHeight()*0.5);
+	//plane.setPosition(ofGetWidth() * 0.5, ofGetHeight() * 0.5,0);
 	epaisseur = 1000;
 	hauteur = 1000;
 	echelle = 5;
@@ -32,7 +34,15 @@ void Labyrinthe::setup() {
 	nearest.set("Nearest", false);
 	filtrage.add(linear);
 	filtrage.add(nearest);
+
+	//mapping
+	mapping.setup("Mapping");
+	normal_mapping.set("Normal", false);
+	displa_mapping.set("Displacement", false);
+	mapping.add(normal_mapping);
 	
+	//mapping.add(displa_mapping);
+
 	slider_exposure.set("exposure", tone_mapping_exposure, 0.0f, 5.0f);
 	slider_gamma.set("gamma", tone_mapping_gamma, 0.0f, 5.0f);
 
@@ -47,7 +57,50 @@ void Labyrinthe::setup() {
 
 	kernel_type = ConvolutionKernel::identity;
 	kernel_name = "identité";
+	ofDisableArbTex();
+	image_mapping.load("mur.jpg");
 	
+	//Fonction height mapping
+		int meshWidth = 500; // Number of vertices along the x-axis
+		int meshHeight = 500; // Number of vertices along the y-axis
+		mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+		for (int y = 0; y < meshHeight; y++) {
+			for (int x = 0; x < meshWidth; x++) {
+				// Calculate the position of the vertex
+				float xPos = ofMap(x, 0, meshWidth - 1, 0, ofGetWidth());
+				float yPos = ofMap(y, 0, meshHeight - 1, 0, ofGetHeight());
+				mesh.addVertex(ofVec3f(xPos, yPos, 0));
+				// Set the texture coordinates of the vertex
+				float u = ofMap(x, 0, meshWidth - 1, 0, 1);
+				float v = ofMap(y, 0, meshHeight - 1, 0, 1);
+				mesh.addTexCoord(ofVec2f(u, v));
+			}
+		}
+		// Add the triangles to the mesh
+		for (int y = 0; y < meshHeight - 1; y++) {
+			for (int x = 0; x < meshWidth - 1; x++) {
+				int index = y * meshWidth + x;
+				mesh.addTriangle(index, index + 1, index + meshWidth);
+				mesh.addTriangle(index + 1, index + meshWidth + 1, index + meshWidth);
+			}
+		}
+
+		for (int i = 0; i < mesh.getNumVertices(); i++) {
+			ofVec3f vertex = mesh.getVertex(i);
+			float u = mesh.getTexCoord(i).x;
+			float v = mesh.getTexCoord(i).y;
+			// Map the texture coordinates to the range [-1, 1]
+			float displacement = ofMap(image_mapping.getColor(u * image_mapping.getWidth() / 2, v * image_mapping.getHeight() / 2).r, 0, 255, -1, 1);
+			// Displace the vertex based on the displacement value
+			vertex.z = displacement * 50; // Adjust the scale of the displacement
+			mesh.setVertex(i, vertex);
+		}
+		//mesh.setTexCoord();
+		
+		//plane.mapTexCoordsFromTexture(texture);
+
+		normalMapShader.load("shader.vert", "shader_fs.frag");
+
 }
 
 void Labyrinthe::update(ofColor color, ofColor back, float epais, ofColor dessin) {
@@ -58,7 +111,14 @@ void Labyrinthe::update(ofColor color, ofColor back, float epais, ofColor dessin
 	posEntreeY = ofGetWindowHeight() / 2 + hauteur / 2;
 	posSortieX = ofGetWindowWidth() / 2;
 	posSortieY = ofGetWindowHeight() / 2 - hauteur / 2;
-	
+	if (displa_mapping)
+			this->displacement_map();
+	//if(displa_mapping){
+	/*
+		
+		}*/
+
+	//}
 }
 
 void Labyrinthe::draw(ofColor color, ofColor back, float epais, ofColor dessin) {
@@ -93,9 +153,31 @@ void Labyrinthe::update3d(ofColor color, ofColor back, float epais, ofColor dess
 	centre3d.z = 0;
 }
 void Labyrinthe::draw3d(ofColor color, ofColor back, float epais, ofColor dessin) {
-	ofSetColor(0, 0, 0);
+	
 	ofFill();
-	ofDrawPlane(centre3d.x, centre3d.y, centre3d.z, epaisseur, hauteur);
+	if (normal_mapping or displa_mapping) {
+		cam.begin();
+		image_mapping.getTextureReference().bind();
+		
+		ofEnableDepthTest();
+		
+		
+		ofDrawPlane(centre3d.x, centre3d.y, centre3d.z, epaisseur, hauteur);
+		
+		
+		
+		ofDisableDepthTest();
+		
+		image_mapping.getTextureReference().unbind();
+		cam.end();
+	}
+	else {
+		ofSetColor(0, 0, 0);
+		//ofDrawPlane(centre3d.x, centre3d.y, centre3d.z, epaisseur, hauteur);
+		mesh.plane(epaisseur, hauteur).draw();
+	}
+	
+	
 	for (int i = 0; i < murs2Dbasique.size(); i++) {
 		ofSetColor(color);
 		ofPushMatrix();
@@ -323,6 +405,18 @@ void Labyrinthe::keyReleased(int key) {
 	// appliquer le filtre de convolution
 	//filter();
 
+}
+void Labyrinthe::displacement_map() {
+	for (int i = 0; i < mesh.getNumVertices(); i++) {
+		ofVec3f vertex = mesh.getVertex(i);
+		float u = mesh.getTexCoord(i).x;
+		float v = mesh.getTexCoord(i).y;
+		// Map the texture coordinates to the range [-1, 1]
+		float displacement = ofMap(image_mapping.getColor(u * image_mapping.getWidth() / 2, v * image_mapping.getHeight() / 2).r, 0, 255, -1, 1);
+		// Displace the vertex based on the displacement value
+		vertex.z = displacement * 50; // Adjust the scale of the displacement
+		mesh.setVertex(i, vertex);
+	}
 }
 
 // fonction de filtrage par convolution

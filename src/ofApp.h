@@ -7,7 +7,8 @@
 #include "ofxAssimpModelLoader.h"
 #include <particleSystem.h>
 #include <array>
-//#include "ofxSkyBox.h"
+#include "../pbr.h"
+#include "ofxSkyBox.h"
 
 class ofApp : public ofBaseApp{
 
@@ -198,5 +199,59 @@ class ofApp : public ofBaseApp{
 		int screen_w = 0;
 		
 		ofEasyCam camTemporaire;
+		ofImage image_mapping;
+
+		//pbr
+		Pbr pbr;
+		ofxGuiGroup gui_material;
+		ofxGuiGroup group_material_color;
+		ofxGuiGroup group_material_factor;
+		ofxGuiGroup group_light;
+		ofxGuiGroup group_tone_mapping;
+
+		ofParameter<ofColor> color_picker_ambient;
+		ofParameter<ofColor> color_picker_diffuse;
+		ofParameter<ofColor> color_picker_specular;
+
+		ofParameter<float> slider_metallic;
+		ofParameter<float> slider_roughness;
+		ofParameter<float> slider_occlusion;
+		ofParameter<float> slider_brightness;
+
+		ofParameter<glm::vec3> slider_fresnel_ior;
+
+		ofParameter<ofColor> color_picker_light_color;
+
+		ofParameter<float> slider_light_intensity;
+
+		ofParameter<float> slider_exposure;
+		ofParameter<float> slider_gamma;
+		ofParameter<bool> toggle_tone_mapping;
+
+		ofParameter<bool> pbr_active=false;
 		
+		
+		ofParameter<bool> toggle_light_motion;
+
+		ofxButton button_reset;
+		
+		float time_current;
+		float time_last;
+		float time_elapsed;
+
+		bool is_key_press_up;
+		bool is_key_press_down;
+		bool is_key_press_left;
+		bool is_key_press_right;
+
+		bool is_key_press_w;
+		bool is_key_press_a;
+		bool is_key_press_s;
+		bool is_key_press_d;
+		bool is_key_press_q;
+		bool is_key_press_e;
+
+		void reset();
+		void menu_pbr();
+
 };

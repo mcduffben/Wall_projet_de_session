@@ -82,6 +82,15 @@
     <ClCompile Include="src\particleSystem.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="pbr.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ofxSkyBox.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ofxCubeMap.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -330,6 +339,15 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\particleSystem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="pbr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofxSkyBox.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofxCubeMap.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

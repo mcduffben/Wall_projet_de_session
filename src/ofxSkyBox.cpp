@@ -18,7 +18,7 @@ ofxSkyBox::ofxSkyBox(){
 void ofxSkyBox::load(){
 
     cubeshader.load("skybox");
-	cubeMap.loadImages("positive_x.png","positive_y.png","positive_z.png","negative_x.png","negative_y.png","negative_z.png");
+	cubeMap.loadImages("test/positive_x.png","test/positive_y.png","test/positive_z.png","test/negative_x.png","test/negative_y.png","test/negative_z.png");
 
 }
 
