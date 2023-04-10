@@ -4,7 +4,7 @@ void Renderer::setup()
 {
 	ofSetFrameRate(30);
 	
-	//Le curseur est caché
+	//Le curseur est cachE
 	ofHideCursor();
 }
 

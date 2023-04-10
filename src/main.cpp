@@ -12,8 +12,7 @@ int main( ){
 	//COMMENTAIRE ESSAI
 
 }
-//this break color why
-// todo ?
+
 //bool use_gl_fixed_function_pipeline = false;
 ////========================================================================
 //int main() {

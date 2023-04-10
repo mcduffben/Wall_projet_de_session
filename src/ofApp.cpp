@@ -8,10 +8,10 @@ void ofApp::setup(){
 	//camera.setAutoDistance(2000);
 	//camera3.setAutoDistance(2000);
 	ofDisableArbTex();
-	labyrinthe.setup();
-	ofSetFrameRate(60);
 	renderer.setup();
 	prime.setup();
+	labyrinthe.setup();
+	ofSetFrameRate(60);
 	ModelDTO ptest ( );
 	img.load("texture.png");
 	ps = new particleSystem(ofPoint(ofGetWidth() / 2, ofGetHeight() - 75), img);
@@ -55,6 +55,7 @@ void ofApp::setupUi() {
 
 	//Background
 	color_picker_background.set("couleur de fond", ofColor(31), ofColor(0, 0), ofColor(255, 255));
+
 	//Couleur de ligne de contour ou remplissage
 	color_picker_stroke.set("Remplissage ou contour", ofColor(255), ofColor(0, 0), ofColor(255, 255));
 	//Largeur de la ligne de contour 
@@ -72,14 +73,13 @@ void ofApp::setupUi() {
 	boutonOptions.addListener(this, &ofApp::button_pressed_options);
 	guiPrincipal.add(button.setup("Upload"));
 	button.addListener(this, &ofApp::button_pressed);
-	
-
-
 	group_draw.add(color_picker_background);
 	group_draw.add(color_picker_stroke);
 	group_draw.add(slider_stroke_weight);
 	group_draw.add(color_dessin);
+	
 	guiPrincipal.add(&group_draw);
+
 
 	//Setup du UI Jeu
 	guiJeu.setup("Jouer");
@@ -194,7 +194,7 @@ void ofApp::setupUi() {
 	guiObstacle.add(ajouterSphere.setup("Ajouter Sphere"));
 	guiObstacle.add(ajouterCylindre.setup("Ajouter Cylindre"));
 	guiObstacle.add(ajouterModele.setup("Ajouter Modele 3d"));
-	guiObstacle.add(absObstacle.setup("Abscisse", x_index, -z_index, z_index));
+	guiObstacle.add(absObstacle.setup("Absc isse", x_index, -z_index, z_index));
 	guiObstacle.add(ordObstacle.setup("Ordonnees", x_index, -z_index, z_index));
 	guiObstacle.add(zObstacle.setup("Profondeur", x_index, -z_index, z_index));
 	guiObstacle.add(radObstacle.setup("Rayon", 100, 50, 300));
@@ -253,16 +253,18 @@ void ofApp::update() {
 		ps->addParticle();
 		ps->update();
 	}
-	//ofColor();
+	ofColor();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
 
 	ofNoFill();
-
-
+	
+	ofEnableDepthTest();
 	renderer.draw();
+	ofSetColor(255, 255, 255);
+	
 	//camera.begin();
 	if (vue == 1)labyrinthe.drawWall();
 	
@@ -271,16 +273,19 @@ void ofApp::draw() {
 	
 	//camera.end();
 	if (vue == 3) {
+		
 				//cam.begin();
 		camtemp.begin();
-		ofEnableDepthTest();
+		//a patch le menu brise si depthTest est actif
+		
 		player.drawFaces();
+		//ofDisableDepthTest();
 		labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
      	prime.draw3d();
-
+		
 		//player.enableColors();
 		
-		ofSetColor(238, 75, 43);
+		//ofSetColor(238, 75, 43);
 		if (timeDeFrame > 0)
 		{
 			timeDeFrame--;
@@ -307,7 +312,7 @@ void ofApp::draw() {
 		//Fin objet 3d
 		cam.end();
 	}
-	drawUi();
+	
 
 	//Ajout d'une nouvelle ligne par paramètres
 	if (newLineNumber > 0) {
@@ -322,9 +327,19 @@ void ofApp::draw() {
 		ofSetColor(0, 0, 175);
 		ofDrawLine({ posLine->x - xLength, posLine->y - yLength }, { posLine->x + xLength, posLine->y + yLength });
 	}
-	ofSetColor(255, 255, 255);
+	
 	//fin de la fonction
 
+
+
+	#pragma region UiSTUFF
+	//requi pour of ofgui sinon il faut implemente un z systeme avec la camera
+	ofDisableDepthTest();
+	drawUi();
+	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+	renderer.drawCursor(listeCurseurs[menu]);
+	renderer.drawCursor(listeCurseurs[menu]);
+	#pragma endregion
 	//Edition de lignes
 	if (modifyingOneLine) {
 		for (int i = 0; i < labyrinthe.murs2Dbasique.size();i++) {
@@ -357,23 +372,17 @@ void ofApp::draw() {
 	oldfloatslidery = ylines;
 	//Edition de lignes finie
 
-
-	//Le curseur est dessin� � la fin pour qu'il soit devant le UI
-	
-
-	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
-	renderer.drawCursor(listeCurseurs[menu]);
-
 	//ofBackground(stroke_color);
 
 	//cam.end();
-	renderer.drawCursor(listeCurseurs[menu]);
+	
 }
 
 //Le UI est dessiné, selon le menu désiré
 void ofApp::drawUi() {
 	if (menu == 0) {
 		guiPrincipal.draw();
+		
 	}
 	else if (menu == 1) {
 		guiJeu.draw();
