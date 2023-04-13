@@ -45,7 +45,7 @@ class ofApp : public ofBaseApp{
 		ofxButton boutonExitOptions;
 
 		ofxPanel guiConceptionMurBasique;
-		ofxButton boutonByParameters, boutonDessinLibre, boutonRetourConceptionMur;
+		ofxButton boutonByParameters, boutonDessinLibre,boutonBezier, boutonRetourConceptionMur;
 
 		ofxPanel guiCreationMurByParameters;
 		ofxButton newLine,saveNew2dWall, exitCreationByParameters, orientationLine;
@@ -157,6 +157,11 @@ class ofApp : public ofBaseApp{
 		void buttonretouraedition();
 		void buttonimportimg();
 		void exportimg();
+
+
+		void creationparBezier();
+		bool creationBezier = false;
+		vector<ofVec2f> bezier;
 
 		//camera
 		//ofEasyCam cam;

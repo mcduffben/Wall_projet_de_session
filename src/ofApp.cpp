@@ -118,11 +118,13 @@ void ofApp::setupUi() {
 	guiConceptionMurBasique.setSize(300, 100);
 	guiConceptionMurBasique.add(boutonByParameters.setup("Creation Par Coordonnees"));
 	guiConceptionMurBasique.add(boutonDessinLibre.setup("Creation Par Dessin Libre"));
+	guiConceptionMurBasique.add(boutonBezier.setup("Creation par Bezier"));
 	guiConceptionMurBasique.add(button3.setup("Upload"));
 	button3.addListener(this, &ofApp::button_pressed);
 	guiConceptionMurBasique.add(boutonRetourConceptionMur.setup("Retour"));
 	boutonByParameters.addListener(this, &ofApp::button_pressed_drawByParameters);
 	boutonDessinLibre.addListener(this, &ofApp::button_pressed_freeDraw);
+	boutonBezier.addListener(this, &ofApp::creationparBezier);
 	boutonRetourConceptionMur.addListener(this, &ofApp::button_pressed_retourConception);
 
 	//Setup du UI Conception Mur basique par paramètre
@@ -505,6 +507,15 @@ void ofApp::mousePressed(int x, int y, int button) {
 		if (l)hasSelectedThings = true;
 	}
 
+	if (this->creationBezier) {
+		labyrinthe.addsphereBezier({ (float)x,(float)y});
+		if(this->bezier.size()<5)this->bezier.push_back({ (float)x,(float)y });
+		if (this->bezier.size() == 5) {
+			labyrinthe.drawBezier(this->bezier);
+			this->bezier.clear();
+		}
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -583,15 +594,18 @@ void ofApp::button_pressed_draw2dwall() {
 }
 
 void ofApp::button_pressed_drawByParameters() {
+	this->creationBezier = false;
 	menu = 5;
 }
 
 void ofApp::button_pressed_freeDraw() {
 	menu = 6;
 	freeDraw = true;
+	this->creationBezier = false;
 }
 
 void ofApp::button_pressed_retourConception() {
+	this->creationBezier = false;
 	labyrinthe.unselect_all();
 	wantsToSelectMultiple = false;
 	wantsToSelect = false;
@@ -755,6 +769,7 @@ void ofApp::image_export(const string name, const string extension) const
 
 void ofApp::button_pressed()
 {
+	this->creationBezier = false;
 	// réinitialiser la zone de texte
 	ofApp::image_export("render", "png");
 
@@ -851,6 +866,13 @@ void ofApp::button_cam_dezoomer() {
 	z_index = z_index - 500;
 	this->update();
 }
+
+
+void ofApp::creationparBezier() {
+	this->creationBezier = true;
+}
+
+
 void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
 	ofPushMatrix();
 
