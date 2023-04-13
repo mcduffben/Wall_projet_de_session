@@ -6,19 +6,20 @@
 //
 
 
-
 #include "ofxSkyBox.h"
 
 ofxSkyBox::ofxSkyBox(){
-
-
 
 }
 
 void ofxSkyBox::load(){
 
+	fondEcran = backgroundType::mountain;
+
     cubeshader.load("skybox");
-	cubeMap.loadImages("positive_x.png","positive_y.png","positive_z.png","negative_x.png","negative_y.png","negative_z.png");
+
+	cubeMap.loadImages("mount_picture/positive_x.png","mount_picture/positive_y.png","mount_picture/positive_z.png",
+		"mount_picture/negative_x.png","mount_picture/negative_y.png","mount_picture/negative_z.png");
 
 }
 

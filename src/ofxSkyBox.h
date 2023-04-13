@@ -15,13 +15,17 @@
 #include "ofxCubeMap.h"
 //#include "ofShader"
 
+enum class backgroundType { mountain, space, sea };
+
 class ofxSkyBox
 {
 
 
 public:
 
-ofxSkyBox();
+    backgroundType fondEcran;
+
+    ofxSkyBox();
     void load();
 
 	void draw();
