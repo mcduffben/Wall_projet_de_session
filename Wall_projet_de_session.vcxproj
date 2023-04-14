@@ -288,6 +288,31 @@
       <AdditionalIncludeDirectories>$(OF_ROOT)\libs\openFrameworksCompiled\project\vs</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="bin\data\model_texture.jpg" />
+    <Image Include="bin\data\Normal_Bump_Normal_Bump.tga" />
+    <Image Include="bin\data\PM3D_ZSphere_5_TXTR.tif" />
+    <Image Include="bin\data\render-230305-170958-182.png" />
+    <Image Include="bin\data\render-230305-171043-643.png" />
+    <Image Include="bin\data\render-230305-171609-729.png" />
+    <Image Include="bin\data\texture.png" />
+    <Image Include="bin\data\TR_diffuse_final_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="bin\data\settings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\data\.gitkeep" />
+    <None Include="bin\data\model_mesh.obj.mtl" />
+    <None Include="bin\data\object.fbx" />
+    <None Include="bin\data\object.ply" />
+    <None Include="bin\data\Snake_by_Swp.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="bin\data\model_mesh.obj" />
+    <Object Include="bin\data\object.obj" />
+    <Object Include="bin\data\Snake_by_Swp.obj" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>
     <VisualStudio>
