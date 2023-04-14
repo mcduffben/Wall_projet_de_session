@@ -110,7 +110,7 @@ class ofApp : public ofBaseApp{
 		void setupUi();
 		void update();
 		void draw();
-
+		void resetLight();
 		void drawUi();
 
 		void keyPressed(int key);
@@ -177,6 +177,7 @@ class ofApp : public ofBaseApp{
 		void button_cam_bas();
 		void button_cam_zoomer();
 		void button_cam_dezoomer();
+		
 
 		
 
@@ -185,4 +186,18 @@ class ofApp : public ofBaseApp{
 
 		particleSystem* ps;
 		ofImage img;
+
+		//Light
+		bool light_directional_actif;
+		bool light_ambiant;
+		float center_x;
+		float center_y;
+		ofColor light_ambient;
+		ofLight light_spot;
+
+		ofLight light_directional;
+		ofLight light_point;
+		
+		ofQuaternion orientation_directional;
+		ofQuaternion orientation_spot;
 };

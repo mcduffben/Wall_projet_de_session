@@ -15,8 +15,8 @@ void ofApp::setup(){
 	ModelDTO ptest ( );
 	img.load("texture.png");
 	ps = new particleSystem(ofPoint(ofGetWidth() / 2, ofGetHeight() - 75), img);
-	player.loadModel("model_mesh.obj");
-	//loader.loadModel("COBRA.obj");
+	//player.loadModel("model_mesh.obj");
+	player.loadModel("Snake_by_Swp.obj");
 	mesh = player.getMesh(0);
 	tex = player.getTextureForMesh(0);
 	//player.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
@@ -49,6 +49,7 @@ void ofApp::setup(){
 
 	//Setup du UI
 	setupUi();
+	resetLight();
 }
 
 void ofApp::setupUi() {
@@ -236,6 +237,33 @@ void ofApp::setupUi() {
 	retouraeditionligne.addListener(this, &ofApp::buttonretouraedition);
 }
 
+void ofApp::resetLight()
+{
+	// configurer la lumière ambiante
+	light_ambient.set(127, 127, 127);
+	center_x = ofGetWidth() / 2.0f;
+	center_y = ofGetHeight() / 2.0f;
+	// configurer la lumière directionnelle
+	light_directional.setDiffuseColor(ofColor(55, 255, 0));
+	light_directional.setSpecularColor(ofColor(100, 255, 10));
+	light_directional.setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
+	light_directional.setDirectional();
+
+	// configurer la lumière ponctuelle
+	light_point.setDiffuseColor(ofColor(255, 255, 255));
+	light_point.setSpecularColor(ofColor(191, 191, 191));
+	light_point.setPointLight();
+
+	// configurer la lumière projecteur
+	light_spot.setDiffuseColor(ofColor(191, 191, 191));
+	light_spot.setSpecularColor(ofColor(191, 191, 191));
+	light_spot.setOrientation(ofVec3f(-ofGetWidth() * (1.0f / 4.0f), 0.0f, 0.0f));
+	light_spot.setSpotConcentration(2);
+	light_spot.setSpotlightCutOff(60);
+	light_spot.setPosition(ofVec3f(-ofGetWidth() * (1.0f / 4.0f), 0.0f, 0.0f));
+	light_spot.setSpotlight();
+
+}
 //--------------------------------------------------------------
 void ofApp::update() {
 
@@ -254,7 +282,20 @@ void ofApp::update() {
 		ps->update();
 	}
 	ofColor();
+	ofPushMatrix();
+	//light 
+	orientation_directional.makeRotate(int(ofGetElapsedTimeMillis() * 0.01f) % 360, 0, 1, 0);
+
+	light_directional.setPosition(center_x - 80, center_y, 20 * 0.75f);
+	light_directional.setOrientation(ofVec3f(center_x + 100, center_y + 100, 20));
+
+	light_spot.setOrientation(orientation_spot);
+
+	light_spot.setPosition(center_x + 400.0f, center_y - 105, -20 / 4);
+
+	ofPopMatrix();
 }
+
 
 //--------------------------------------------------------------
 void ofApp::draw() {
@@ -262,9 +303,54 @@ void ofApp::draw() {
 	ofNoFill();
 	
 	ofEnableDepthTest();
+
 	renderer.draw();
+
 	ofSetColor(255, 255, 255);
+	//light
+	#pragma region Light
+	ofPushMatrix();
+
 	
+	light_directional.draw();
+	//if (is_active_light_spot)
+	light_spot.draw();
+
+	ofPopMatrix();
+
+	// activer l'éclairage dynamique
+	ofEnableLighting();
+
+	// activer les lumières
+	ofSetGlobalAmbientColor(ofColor(255, 255, 255));
+
+	//if (is_active_light_directional)
+	light_directional.enable();
+
+	//if (is_active_light_point)
+	 // light_point.enable();
+
+	//if (is_active_light_spot)
+	light_spot.enable();
+
+	
+
+	
+
+	
+
+	//// désactiver les lumières
+	//ofSetGlobalAmbientColor(ofColor(0, 0, 0));
+	//light_directional.disable();
+	//light_point.disable();
+	//light_spot.disable();
+
+	//// désactiver l'éclairage dynamique
+	//ofDisableLighting();
+
+
+	#pragma endregion
+
 	//camera.begin();
 	if (vue == 1)labyrinthe.drawWall();
 	
