@@ -5,12 +5,10 @@
 #include "Labyrinthe.h"
 #include "PrimitiveDTO.h"
 #include "ofxAssimpModelLoader.h"
-#include <particleSystem.h>
 #include <array>
 #include "TesselationRender.h"
 //#include "ofxSkyBox.h"
-#include "../pbr.h"
-#include "ofxSkyBox.h"
+#include "pbr.h"
 
 class ofApp : public ofBaseApp{
 
@@ -36,6 +34,7 @@ class ofApp : public ofBaseApp{
 		ofxAssimpModelLoader transitoryModel;
 		
 		bool freeDraw, horizontal, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings, particleEffect;
+		bool renderlabyrinthe3d;
 		bool modifyingLines, modifyingOneLine, drawSphere,drawCyl,drawMod, wantsimport;
 		int newLineNumber, xLength, yLength;
 		int oldfloatsliderx,oldfloatslidery,timeDeFrame;
@@ -68,7 +67,7 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel guiObstacle;
 		ofxButton ajouterSphere, ajouterModele, ajouterCylindre, sauvegarderPrime3d, retourajouer, undoprime, redoprime;;
-		ofxFloatSlider absObstacle, ordObstacle, zObstacle, radObstacle, heightCylinder,scaleModel, degXmodel,degYmodel;
+		ofxFloatSlider absObstacle, ordObstacle, zObstacle, radObstacle, heightCylinder,scaleModel, degXmodel,degYmodel, hautDir,absDir,ordDir;
 		ofxColorSlider colObstacle;
 
 		ofxPanel guiEditionLigne;
@@ -81,9 +80,6 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel affichageMur;
 		ofxButton retouraeditionligne, importerimg;
-
-		ofxPanel materiauLumiere;
-		ofxFloatSlider hDir, absDir, OrdDir, hSpot, absSpot, ordSport;
 
 		//upload Image
 
@@ -172,7 +168,7 @@ class ofApp : public ofBaseApp{
 
 		void creationparBezier();
 		bool creationBezier = false;
-		vector<ofVec2f> bezier;
+		vector<ofVec3f> bezier;
 
 		//camera
 		//ofEasyCam cam;
@@ -199,7 +195,7 @@ class ofApp : public ofBaseApp{
 		void drawVector(ofPoint, ofPoint, float);
 
 
-		particleSystem* ps;
+		
 		ofImage img;
 		//tone mapping
 		ofImage image;

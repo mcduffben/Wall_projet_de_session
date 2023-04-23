@@ -1,27 +1,6 @@
 #include "Labyrinthe.h"
 #include <math.h>
 
-void bezier_cubic(
-	float t,
-	float p1x, float p1y, float p1z,
-	float p2x, float p2y, float p2z,
-	float p3x, float p3y, float p3z,
-	float p4x, float p4y, float p4z,
-	float p5x, float p5y, float p5z,
-	float& x, float& y, float& z)
-{
-	float u = 1 - t;
-	float uu = u * u;
-	float uuu = uu * u;
-	float tt = t * t;
-	float ttt = tt * t;
-	float uuuu = uuu * u;
-	float tttt = ttt * t;
-
-	x = uuuu * p1x + 2 * uuu * t * p2x + 3 * uu * tt * p3x + 2 * u * ttt * p4x + tttt * p5x;
-	y = uuuu * p1y + 2 * uuu * t * p2y + 3 * uu * tt * p3y + 2 * u * ttt * p4y + tttt * p5y;
-	z = uuuu * p1z + uuu * t * p2z + uu * tt * p3z + u * ttt * p4z + tttt * p5z;
-}
 
 void Labyrinthe::setup() {
 
@@ -42,12 +21,6 @@ void Labyrinthe::setup() {
 	hauteurMur3d = 100;
 
 
-	//bezier
-	this->radius = 10.0f;
-	this->line_resolution = 100;
-	for (int index = 0; index <= line_resolution; ++index)
-		courbe.addVertex(ofPoint());
-	//fin bezier
 
 	tone_mapping_exposure = 1.0f;
 	tone_mapping_gamma = 2.2f;
@@ -157,8 +130,8 @@ void Labyrinthe::draw(ofColor color, ofColor back, float epais, ofColor dessin) 
 	ofFill();
 	ofDrawPlane(ofGetWindowWidth()/2,ofGetWindowHeight()/2,0,epaisseur,hauteur);
 	ofSetColor(255, 0, 0);
-	for (int i = 0; i < sphereBezier.size(); i++) {
-		ofDrawEllipse(sphereBezier[i].x, sphereBezier[i].y, this->radius / 2, this->radius / 2);
+	for (int i = 0; i < sphereCatmull.size(); i++) {
+		ofDrawEllipse(sphereCatmull[i].x, sphereCatmull[i].y, this->radius / 2, this->radius / 2);
 	}
 	ofSetColor(color);
 	for (int i = 0; i < allcurvs.size(); i++)allcurvs[i].draw();
@@ -599,26 +572,15 @@ void Labyrinthe::filter()
 
 
 
-void Labyrinthe::drawBezier(vector<ofVec2f> vec) {
-	for (int index = 0; index <= line_resolution; ++index)
-	{
+void Labyrinthe::drawCatmullRom(vector<ofVec3f> vec) {
+	
 
-		bezier_cubic(
-			index / (float)line_resolution,
-			vec[0].x, vec[0].y, 0,
-			vec[1].x, vec[1].y, 0,
-			vec[2].x, vec[2].y, 0,
-			vec[3].x, vec[3].y, 0,
-			vec[4].x, vec[4].y, 0,
-			position.x, position.y, position.z);
-
-
-		courbe[index] = position;
-	}
+	courbe.setSubdivisions(5);
+	courbe.setControlVertices(vec);
 
 	allcurvs.push_back(courbe);
 }
 
-void Labyrinthe::addsphereBezier(ofVec2f point) {
-	this->sphereBezier.push_back(point);
+void Labyrinthe::addsphereCatmull(ofVec3f point) {
+	this->sphereCatmull.push_back(point);
 }

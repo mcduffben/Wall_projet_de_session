@@ -69,8 +69,8 @@ public:
 	float oscillation_amplitude_light;
 	int materialChooser;
 
-
-	float hauteur;
+	bool renderSpot, renderPoint, renderDir, renderAmbient;
+	float hautDir, absDir, ordDir;
 
 	//end lightning
 

@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "LineDTO.h"
 #include "ofxGui.h"
+#include "ofxSimpleSpline.h"
 
 // énumération des types de kernel de convolution
 enum class ConvolutionKernel
@@ -83,16 +84,17 @@ public:
 	bool selectCheckerSingle(bool single,int x, int y);
 
 
-	//bezier
-	ofPolyline courbe;
+	//catmull
+	ofxSimpleSpline courbe;
 	int line_resolution;
 	float radius;
-	void drawBezier(vector<ofVec2f> vec);
+	void drawCatmullRom(vector<ofVec3f> vec);
 	ofVec3f position;
-	vector<ofPolyline> allcurvs;
-	vector<ofVec2f> sphereBezier;
-	void addsphereBezier(ofVec2f point);
-	//fin bezier
+	vector<ofxSimpleSpline> allcurvs;
+	vector<ofVec2f> sphereCatmull;
+	void addsphereCatmull(ofVec3f point);
+	//fin catmull
+
 
 	ofVec2f po;
 	vector<LineDTO> mathPreview;

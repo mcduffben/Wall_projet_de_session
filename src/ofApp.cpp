@@ -4,6 +4,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	
+	renderlabyrinthe3d = true;
 	camTemporaire.setPosition(0, 0, 0);
 
 	tessRender.setup();
@@ -16,16 +17,8 @@ void ofApp::setup(){
 	labyrinthe.setup();
 	renderer.setup();
 	prime.setup();
-	ModelDTO ptest ( );
+
 	img.load("texture.png");
-	ps = new particleSystem(ofPoint(ofGetWidth() / 2, ofGetHeight() - 75), img);
-	player.loadModel("testA.fbx");
-	player.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-	
-	player.setScale(0.2f, 0.2f, 0.2f);
-	ofSetCircleResolution(60);
-	ofSetCylinderResolution(60,60);
-	player.setPosition(0, 0 - ofGetHeight() / 2, 5);
 
 	//Menu : 0 = menu principal, 1 = jeu, 2 = conception, 3 = options, 
 	// 4 = mur basique (Conception), 5 = mur basique par param, 6 = mur basique dessin, 7 = édition 2D, 8 = edition ligne 2d
@@ -45,10 +38,7 @@ void ofApp::setup(){
 	
 	cam.setPosition(x_index, y_index, z_index);
 	
-	player.stopAllAnimations();
-	player.resetAllAnimations();
-	player.setPositionForAllAnimations(0);
-	player.setRotation(1,1,90,90,0);
+
 	//Setup du UI
 	setupUi();
 
@@ -258,6 +248,10 @@ void ofApp::setupUi() {
 	guiObstacle.add(degYmodel.setup("Orientation Y du modele", 270, 0, 360));
 	guiObstacle.add(colObstacle.setup("color", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
 	guiObstacle.add(sauvegarderPrime3d.setup("Sauvegarder"));
+
+	guiObstacle.add(absDir.setup("Abscisse Lumiere", 0, -1000, 1000));
+	guiObstacle.add(ordDir.setup("Ordonnee Lumiere", 0, -1000, 1000));
+	guiObstacle.add(hautDir.setup("Hauteur Lumiere", 100, -1000, 1000));
 	
 	guiObstacle.add(&prime.illimunation);
 	
@@ -302,7 +296,12 @@ void ofApp::setupUi() {
 //--------------------------------------------------------------
 void ofApp::update() {
 
-	if (vue == 3)prime.update3d();
+	if (vue == 3) {
+		prime.hautDir = hautDir;
+		prime.absDir = absDir;
+		prime.ordDir = ordDir;
+		prime.update3d();
+	}
 
 	if (vue == 4)tessRender.update();
 
@@ -315,11 +314,7 @@ void ofApp::update() {
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, stroke_weight, color_dessin);
 
 	ofBackground(color_picker_background);
-	if (timeDeFrame > 0)
-	{
-		ps->addParticle();
-		ps->update();
-	}
+	
 
 	if (pbr_active) {
 		time_current = ofGetElapsedTimef();
@@ -374,7 +369,7 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 	ofNoFill();
-	renderer.draw();
+
 	if (vue == 4)
 	{
 		drawTess();
@@ -392,7 +387,6 @@ void ofApp::draw() {
 		labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
 
 		ofNoFill();
-		renderer.draw();
 		//camera.begin();
 		
 		
@@ -403,7 +397,7 @@ void ofApp::draw() {
 
 		//image_mapping.getTextureReference().bind();
 		//ofEnableDepthTest();
-		labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
+		if(renderlabyrinthe3d)labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
 		//ofDisableDepthTest();
 		//image_mapping.getTextureReference().unbind();
 
@@ -419,6 +413,7 @@ void ofApp::draw() {
 		//Ajout d'objet 3d
 		if (drawSphere) {
 			ofSetColor(colObstacle);
+			ofDrawSphere(absObstacle, ordObstacle, zObstacle, radObstacle);
 		}
 		if (drawCyl) {
 			ofSetColor(colObstacle);
@@ -601,6 +596,9 @@ void ofApp::keyPressed(int key) {
 	}else{
 	switch (key)
 	{
+	case 48: // key 0
+		renderlabyrinthe3d = !renderlabyrinthe3d;
+		break;
 	case 49: // key 1
 		prime.materialChooser = 1;
 		break;
@@ -616,33 +614,19 @@ void ofApp::keyPressed(int key) {
 	case 52: // key 4
 		prime.materialChooser = 0;
 		break;
+	case 53: // key 5
+		prime.renderAmbient = !prime.renderAmbient;
+		break;
+	case 54: // key 6
+		prime.renderDir=!prime.renderDir;
+		break;
+	case 55: // key 7
+		prime.renderPoint=!prime.renderPoint;
+		break;
+	case 56: // key 8
+		prime.renderSpot=!prime.renderSpot;
+		break;
 
-		case OF_KEY_LEFT: // touche ←
-			player.setPosition(player.getPosition().x-5, player.getPosition().y, player.getPosition().z);
-			break;
-
-		case OF_KEY_UP: // touche ↑
-			player.setPosition(player.getPosition().x, player.getPosition().y + 5, player.getPosition().z);
-			break;
-
-		case OF_KEY_RIGHT: // touche →
-			player.setPosition(player.getPosition().x+5, player.getPosition().y , player.getPosition().z);
-			break;
-
-		case OF_KEY_DOWN: // touche ↓
-			player.setPosition(player.getPosition().x, player.getPosition().y-5 , player.getPosition().z);
-			break;
-
-		case 120: // touche x
-	
-			player.setAnimation(0);
-			player.getAnimation(0).play();
-			
-			player.playAllAnimations();
-			ps->origin = player.getPosition();
-			timeDeFrame += 630;
-
-			break;
 		
 	default:
 		break;
@@ -780,10 +764,10 @@ void ofApp::mousePressed(int x, int y, int button) {
 	}
 
 	if (this->creationBezier) {
-		labyrinthe.addsphereBezier({ (float)x,(float)y});
-		if(this->bezier.size()<5)this->bezier.push_back({ (float)x,(float)y });
+		labyrinthe.addsphereCatmull({ (float)x,(float)y});
+		if(this->bezier.size()<5)this->bezier.push_back({ (float)x,(float)y,0 });
 		if (this->bezier.size() == 5) {
-			labyrinthe.drawBezier(this->bezier);
+			labyrinthe.drawCatmullRom(this->bezier);
 			this->bezier.clear();
 		}
 	}

@@ -8,6 +8,16 @@ void PrimitiveDTO::setup() {
 	oscillation_frequency_light = 7500.0f;
 	oscillation_amplitude_light = 45.0;
 
+
+	renderSpot = true;
+	renderPoint = true;
+	renderDir = true;
+	renderAmbient = true;
+	hautDir = 100; 
+	absDir = 0;
+	ordDir = 0;
+
+
 	navCe = 0;
 	navCy = 0;
 	navF = 0;
@@ -130,10 +140,10 @@ void PrimitiveDTO::update3d() {
 	ofPushMatrix();
 
 	orientation_directional.makeRotate(int(ofGetElapsedTimeMillis() * 0.1f) % 360, 0, 1, 0);
-	light_directional.setPosition(0, 0, 500);
+	light_directional.setPosition(0, 0,200);
 	light_directional.setOrientation(orientation_directional);
 
-	light_point.setPosition(ofGetMouseX(), ofGetMouseY(), 200);
+	light_point.setPosition(ofGetMouseX()-800, -ofGetMouseY()+800, 0);
 
 	oscillation_light = oscillate_light(ofGetElapsedTimeMillis(), oscillation_frequency_light, oscillation_amplitude_light);
 
@@ -141,7 +151,7 @@ void PrimitiveDTO::update3d() {
 
 	light_spot.setOrientation(orientation_spot);
 
-	light_spot.setPosition(0, - 75.0f, 200);
+	light_spot.setPosition(absDir, ordDir, hautDir);
 
 	ofPopMatrix();
 }
@@ -172,17 +182,18 @@ void PrimitiveDTO::draw3d() {
 	ofEnableDepthTest();
 
 	ofPushMatrix();
-	light_point.draw();
-	light_directional.draw();
-	light_spot.draw();
+	if(renderPoint)light_point.draw();
+	if(renderDir)light_directional.draw();
+	if(renderSpot)light_spot.draw();
 	ofPopMatrix();
 
 	ofEnableLighting();
-	ofSetGlobalAmbientColor(light_ambient);
+	if (renderAmbient)ofSetGlobalAmbientColor(light_ambient);
+	else ofSetGlobalAmbientColor(0);
 
-	light_point.enable();
-	light_directional.enable();
-	light_spot.enable();
+	if (renderPoint)light_point.enable();
+	if (renderDir)light_directional.enable();
+	if (renderSpot)light_spot.enable();
 
 	//activation des illuminations
 	if(generer_texture){
@@ -317,6 +328,10 @@ void PrimitiveDTO::draw3d() {
 	if (generer_texture) {
 		texture.unbind();
 	}
+
+	if (renderPoint)light_point.disable();
+	if (renderDir)light_directional.disable();
+	if (renderSpot)light_spot.disable();
 	
 	//draw menu illumination
 
