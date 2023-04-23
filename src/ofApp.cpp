@@ -377,13 +377,14 @@ void ofApp::draw() {
 	renderer.draw();
 	if (vue == 4)
 	{
+		pbr_active.set(false);
 		drawTess();
 	}
 	
 	
 	//camera.begin();
 	else if (vue == 1){
-
+		pbr_active.set(false);
 		labyrinthe.drawWall();
 		
 	}
@@ -393,11 +394,14 @@ void ofApp::draw() {
 
 		ofNoFill();
 		renderer.draw();
+		if (pbr_active)
+			pbr.draw();
 		//camera.begin();
 		
 		
 	}else 
 	if (vue == 3) {
+		pbr_active.set(false);
 		cam.begin();
 		ofPushMatrix();
 
@@ -505,8 +509,7 @@ void ofApp::draw() {
 	//cam.end();
 	renderer.drawCursor(listeCurseurs[menu]);
 	//ofDisableDepthTest();
-	if (pbr_active)
-		pbr.draw();
+	
 	
 }
 

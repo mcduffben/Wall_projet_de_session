@@ -10,7 +10,7 @@
 #include "TesselationRender.h"
 //#include "ofxSkyBox.h"
 #include "../pbr.h"
-#include "ofxSkyBox.h"
+//#include "ofxSkyBox.h"
 
 class ofApp : public ofBaseApp{
 
