@@ -394,8 +394,10 @@ void ofApp::draw() {
 
 		ofNoFill();
 		renderer.draw();
-		if (pbr_active)
+		if (pbr_active){
+			ofSetFullscreen(true);
 			pbr.draw();
+		}
 		//camera.begin();
 		
 		
