@@ -13,6 +13,7 @@ void Pbr::setup()
 
     // chargement d'un modèle 3D
     teapot.loadModel("geometry/model_fille.obj");
+    
 
     // désactiver le matériau par défaut du modèle
     teapot.disableMaterials();
@@ -136,7 +137,9 @@ void Pbr::update()
 
 void Pbr::draw()
 {
-    ofSetFullscreen(true);
+
+    
+   // ofSetFullscreen(true);
     // activer l'occlusion en profondeur
     ofEnableDepthTest();
 
@@ -153,7 +156,7 @@ void Pbr::draw()
 
     // transformer l'origine de la scène au milieu de la fenêtre d'affichage
     ofTranslate(center_x + offset_x, center_y, offset_z);
-
+    
 
     ofPopMatrix();
 
@@ -161,24 +164,28 @@ void Pbr::draw()
    
 // positionner le teapot
     teapot.setPosition(
-        -ofGetWidth() / 10,
-        -ofGetHeight() / 100,
+        ofGetWidth() / 2,
+        ofGetHeight()/2.5,
         position_teapot.z);
-
-   
+    
+    ofRotateYDeg(45.0f);
+    ofRotateXDeg(45);
+    ofRotateZDeg(45);
     ofPushMatrix();
-    ofRotateDeg(45.0f, 1.0f, 0.0f, 0.0f);
+    
     teapot.draw(OF_MESH_FILL);
+    
     ofPopMatrix();
 
     ofPopMatrix();
 
+    
     // désactiver le shader
     shader.end();
 
     // désactiver la lumière
     light.disable();
-
+    
     // désactiver l'éclairage dynamique
     ofDisableLighting();
 
