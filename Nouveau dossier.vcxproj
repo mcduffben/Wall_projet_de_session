@@ -208,6 +208,7 @@
     <ClCompile Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxSlider.cpp" />
     <ClCompile Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxSliderGroup.cpp" />
     <ClCompile Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxToggle.cpp" />
+    <ClCompile Include="src\TesselationRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pbr.h" />
@@ -281,6 +282,7 @@
     <ClInclude Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxSlider.h" />
     <ClInclude Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxSliderGroup.h" />
     <ClInclude Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxToggle.h" />
+    <ClInclude Include="src\TesselationRender.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">

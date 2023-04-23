@@ -5,6 +5,10 @@
 void ofApp::setup(){
 	
 	camTemporaire.setPosition(0, 0, 0);
+
+	tessRender.setup();
+
+
 	myfont.load("times-new-roman.ttf", 32);
 	ofSetBackgroundColor(229, 235, 231);
 	
@@ -72,7 +76,7 @@ void ofApp::setupUi() {
 	boutonJeu.addListener(this, &ofApp::button_pressed_jeu);
 	guiPrincipal.add(boutonConception.setup("Conception"));
 	boutonConception.addListener(this, &ofApp::button_pressed_conception);
-	guiPrincipal.add(boutonOptions.setup("Options"));
+	guiPrincipal.add(boutonOptions.setup("Shader de Tesselation"));
 	boutonOptions.addListener(this, &ofApp::button_pressed_options);
 	guiPrincipal.add(button.setup("Upload"));
 	button.addListener(this, &ofApp::button_pressed);
@@ -101,7 +105,7 @@ void ofApp::setupUi() {
 	group_material_color.add(color_picker_diffuse);
 	group_material_color.add(color_picker_specular);
 	gui_material.add(&group_material_color);
-	// interface pour les facteurs numériques du matériau
+	// interfullbookace pour les facteurs numériques du matériau
 	group_material_factor.setup("factor");
 	group_material_factor.add(slider_metallic);
 	group_material_factor.add(slider_roughness);
@@ -156,7 +160,7 @@ void ofApp::setupUi() {
 	boutonExitConception.addListener(this, &ofApp::button_pressed_exit);
 
 	//Setup du UI Options
-	guiOptions.setup("Options");
+	guiOptions.setup("Shader de tesselation");
 	boutonExitOptions.setup("Retour");
 	boutonExitOptions.addListener(this, &ofApp::button_pressed_exit);
 	guiOptions.add(&boutonExitOptions);
@@ -166,11 +170,13 @@ void ofApp::setupUi() {
 	guiConceptionMurBasique.setSize(300, 100);
 	guiConceptionMurBasique.add(boutonByParameters.setup("Creation Par Coordonnees"));
 	guiConceptionMurBasique.add(boutonDessinLibre.setup("Creation Par Dessin Libre"));
+	guiConceptionMurBasique.add(boutonBezier.setup("Creation par Bezier"));
 	guiConceptionMurBasique.add(button3.setup("Upload"));
 	button3.addListener(this, &ofApp::button_pressed);
 	guiConceptionMurBasique.add(boutonRetourConceptionMur.setup("Retour"));
 	boutonByParameters.addListener(this, &ofApp::button_pressed_drawByParameters);
 	boutonDessinLibre.addListener(this, &ofApp::button_pressed_freeDraw);
+	boutonBezier.addListener(this, &ofApp::creationparBezier);
 	boutonRetourConceptionMur.addListener(this, &ofApp::button_pressed_retourConception);
 
 	//Setup du UI Conception Mur basique par paramètre
@@ -220,7 +226,7 @@ void ofApp::setupUi() {
 	//Setup du UI edition ligne 2d
 	guiEditionLigne.setup("Edition d'une ligne");
 	guiEditionLigne.add(posxline.setup("Position x", 800, 0, 2000));
-	guiEditionLigne.add(posyline.setup("Position y", 800, 0, 2000));
+	guiEditionLigne.add(posyline.setup("Position y",400, 0, 2000));
 	guiEditionLigne.add(voirMur.setup("Affichier Mur"));
 	guiEditionLigne.add(button7.setup("Upload"));
 	button7.addListener(this, &ofApp::button_pressed);
@@ -296,6 +302,10 @@ void ofApp::setupUi() {
 //--------------------------------------------------------------
 void ofApp::update() {
 
+	if (vue == 3)prime.update3d();
+
+	if (vue == 4)tessRender.update();
+
 	//cam.setPosition(x_index, y_index, z_index);
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, slider_stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, slider_stroke_weight,color_dessin);
@@ -363,12 +373,16 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	
-	
 	ofNoFill();
 	renderer.draw();
+	if (vue == 4)
+	{
+		drawTess();
+	}
+	
+	
 	//camera.begin();
-	if (vue == 1){
+	else if (vue == 1){
 
 		labyrinthe.drawWall();
 		
@@ -376,8 +390,13 @@ void ofApp::draw() {
 	else if (vue == 2) {
 		
 		labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
-		}
-	
+
+		ofNoFill();
+		renderer.draw();
+		//camera.begin();
+		
+		
+	}else 
 	if (vue == 3) {
 		cam.begin();
 		ofPushMatrix();
@@ -393,22 +412,13 @@ void ofApp::draw() {
      	prime.draw3d();
 		//fin des objets 3d
 
-		
-		player.enableColors();
-		ofSetColor(238, 75, 43);
-		
-		player.drawFaces();
-		if (timeDeFrame > 0)
-		{
-			timeDeFrame--;
-			ps->display();
 
-		}
+			//labyrinthe.draw3d(color_picker_stroke, background_color, stroke_weight, color_dessin);
+		
 		
 		//Ajout d'objet 3d
 		if (drawSphere) {
 			ofSetColor(colObstacle);
-			ofDrawSphere(absObstacle, ordObstacle, zObstacle, radObstacle);
 		}
 		if (drawCyl) {
 			ofSetColor(colObstacle);
@@ -430,72 +440,72 @@ void ofApp::draw() {
 		ofPopMatrix();
 		cam.end();
 	}
+
 	drawUi();
 
 
-	//cam.begin();
-	//Ajout d'une nouvelle ligne par param�tres
+		//cam.begin();
+		//Ajout d'une nouvelle ligne par param�tres
 
-	//Ajout d'une nouvelle ligne par paramètres
-	if (newLineNumber > 0) {
-		if (horizontal) {
-			xLength = lengthLine;
-			yLength = 0;
+		//Ajout d'une nouvelle ligne par paramètres
+		if (newLineNumber > 0) {
+			if (horizontal) {
+				xLength = lengthLine;
+				yLength = 0;
+			}
+			else {
+				xLength = 0;
+				yLength = lengthLine;
+			}
+			ofSetColor(0, 0, 175);
+			ofDrawLine({ posLine->x - xLength, posLine->y - yLength }, { posLine->x + xLength, posLine->y + yLength });
 		}
-		else {
-			xLength = 0;
-			yLength = lengthLine;
-		}
-		ofSetColor(0, 0, 175);
-		ofDrawLine({ posLine->x - xLength, posLine->y - yLength }, { posLine->x + xLength, posLine->y + yLength });
-	}
-	ofSetColor(255, 255, 255);
-	//fin de la fonction
+		ofSetColor(255, 255, 255);
+		//fin de la fonction
 
-	//Edition de lignes
-	if (modifyingOneLine) {
-		for (int i = 0; i < labyrinthe.murs2Dbasique.size();i++) {
-			if (labyrinthe.murs2Dbasique[i].selected) {
-				labyrinthe.murs2Dbasique[i].pinit.x = posxline;
-				labyrinthe.murs2Dbasique[i].pfinal.x = posxline+ labyrinthe.murs2Dbasique[i].diffx;
-				labyrinthe.murs2Dbasique[i].pinit.y = posyline;
-				labyrinthe.murs2Dbasique[i].pfinal.y = posyline + labyrinthe.murs2Dbasique[i].diffy;
+		//Edition de lignes
+		if (modifyingOneLine) {
+			for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
+				if (labyrinthe.murs2Dbasique[i].selected) {
+					labyrinthe.murs2Dbasique[i].pinit.x = posxline;
+					labyrinthe.murs2Dbasique[i].pfinal.x = posxline + labyrinthe.murs2Dbasique[i].diffx;
+					labyrinthe.murs2Dbasique[i].pinit.y = posyline;
+					labyrinthe.murs2Dbasique[i].pfinal.y = posyline + labyrinthe.murs2Dbasique[i].diffy;
+				}
 			}
 		}
-	}
-	if (modifyingLines && xlines!=oldfloatsliderx) {
-		for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
-			if (labyrinthe.murs2Dbasique[i].selected) {
-				labyrinthe.murs2Dbasique[i].pinit.x += xlines;
-				labyrinthe.murs2Dbasique[i].pfinal.x += xlines;
+		if (modifyingLines && xlines != oldfloatsliderx) {
+			for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
+				if (labyrinthe.murs2Dbasique[i].selected) {
+					labyrinthe.murs2Dbasique[i].pinit.x += xlines;
+					labyrinthe.murs2Dbasique[i].pfinal.x += xlines;
+				}
 			}
 		}
-	}
-	if (modifyingLines && ylines != oldfloatslidery) {
-		for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
-			if (labyrinthe.murs2Dbasique[i].selected) {
-				labyrinthe.murs2Dbasique[i].pinit.y += ylines;
-				labyrinthe.murs2Dbasique[i].pfinal.y += ylines;
+		if (modifyingLines && ylines != oldfloatslidery) {
+			for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
+				if (labyrinthe.murs2Dbasique[i].selected) {
+					labyrinthe.murs2Dbasique[i].pinit.y += ylines;
+					labyrinthe.murs2Dbasique[i].pfinal.y += ylines;
+				}
 			}
 		}
-	}
-	oldfloatsliderx = xlines;
-	oldfloatslidery = ylines;
-	//Edition de lignes finie
+		oldfloatsliderx = xlines;
+		oldfloatslidery = ylines;
+		//Edition de lignes finie
 
 
-	//Le curseur est dessin� � la fin pour qu'il soit devant le UI
-	
+		//Le curseur est dessin� � la fin pour qu'il soit devant le UI
 
-	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
-	renderer.drawCursor(listeCurseurs[menu]);
 
-	//ofBackground(stroke_color);
+		//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+
+		//ofBackground(stroke_color);
 
 	//cam.end();
 	renderer.drawCursor(listeCurseurs[menu]);
 	//ofDisableDepthTest();
-	if(pbr_active)
+	if (pbr_active)
 		pbr.draw();
 	
 }
@@ -591,6 +601,22 @@ void ofApp::keyPressed(int key) {
 	}else{
 	switch (key)
 	{
+	case 49: // key 1
+		prime.materialChooser = 1;
+		break;
+
+	case 50: // key 2
+		prime.materialChooser = 2;
+		break;
+
+	case 51: // key 3
+		prime.materialChooser = 3;
+		break;
+
+	case 52: // key 4
+		prime.materialChooser = 0;
+		break;
+
 		case OF_KEY_LEFT: // touche ←
 			player.setPosition(player.getPosition().x-5, player.getPosition().y, player.getPosition().z);
 			break;
@@ -753,6 +779,15 @@ void ofApp::mousePressed(int x, int y, int button) {
 		if (l)hasSelectedThings = true;
 	}
 
+	if (this->creationBezier) {
+		labyrinthe.addsphereBezier({ (float)x,(float)y});
+		if(this->bezier.size()<5)this->bezier.push_back({ (float)x,(float)y });
+		if (this->bezier.size() == 5) {
+			labyrinthe.drawBezier(this->bezier);
+			this->bezier.clear();
+		}
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -817,6 +852,7 @@ void ofApp::button_pressed_conception()
 void ofApp::button_pressed_options()
 {
 	menu = 3;
+	vue = 4;
 }
 
 //Bouton Exit
@@ -831,15 +867,18 @@ void ofApp::button_pressed_draw2dwall() {
 }
 
 void ofApp::button_pressed_drawByParameters() {
+	this->creationBezier = false;
 	menu = 5;
 }
 
 void ofApp::button_pressed_freeDraw() {
 	menu = 6;
 	freeDraw = true;
+	this->creationBezier = false;
 }
 
 void ofApp::button_pressed_retourConception() {
+	this->creationBezier = false;
 	labyrinthe.unselect_all();
 	wantsToSelectMultiple = false;
 	wantsToSelect = false;
@@ -1003,6 +1042,7 @@ void ofApp::image_export(const string name, const string extension) const
 
 void ofApp::button_pressed()
 {
+	this->creationBezier = false;
 	// réinitialiser la zone de texte
 	ofApp::image_export("render", "png");
 
@@ -1099,6 +1139,13 @@ void ofApp::button_cam_dezoomer() {
 	z_index = z_index - 500;
 	this->update();
 }
+
+
+void ofApp::creationparBezier() {
+	this->creationBezier = true;
+}
+
+
 void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
 	ofPushMatrix();
 
@@ -1118,6 +1165,48 @@ void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
 
 
 	ofPopMatrix();
+
+}
+
+
+void ofApp::setupTesselation() {
+
+	ofDisableArbTex();
+
+	ofFboSettings settings;
+	settings.internalformat = GL_RGB32F;
+	settings.width = ofGetWidth();
+	settings.height = ofGetHeight();
+	settings.useDepth = true;
+	settings.depthStencilAsTexture = true;
+
+	fbo.allocate(settings);
+
+	fboTess.begin();
+	ofClear(0, 0, 0);
+
+	// No need to clear the alpha channel since I'm using the GL_RGB32F format
+	// ofClearAlpha();
+	fboTess.end();
+
+	parameters.setName("Settings");
+
+	parameters.add(tessRender.parameters[0]);
+
+	guiTesslation.setup(parameters);
+}
+void ofApp::drawTess() {
+
+
+	fboTess.begin();
+
+	ofClear(0);
+
+	tessRender.draw();
+	fboTess.end();
+
+	guiTesslation.draw();
+
 
 }
 

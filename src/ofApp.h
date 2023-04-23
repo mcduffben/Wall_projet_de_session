@@ -7,6 +7,8 @@
 #include "ofxAssimpModelLoader.h"
 #include <particleSystem.h>
 #include <array>
+#include "TesselationRender.h"
+//#include "ofxSkyBox.h"
 #include "../pbr.h"
 #include "ofxSkyBox.h"
 
@@ -14,7 +16,12 @@ class ofApp : public ofBaseApp{
 
 	public:
 		
-		//ofxSkyBox skybox;
+		ofFbo fboTess;
+		ofxPanel guiTesslation;
+		ofParameterGroup parameters;
+		void setupTesselation();
+		void drawTess();
+		TesselationRender tessRender;
 
 		Renderer renderer;
 		Labyrinthe labyrinthe;
@@ -46,7 +53,7 @@ class ofApp : public ofBaseApp{
 		ofxButton boutonExitOptions;
 
 		ofxPanel guiConceptionMurBasique;
-		ofxButton boutonByParameters, boutonDessinLibre, boutonRetourConceptionMur;
+		ofxButton boutonByParameters, boutonDessinLibre,boutonBezier, boutonRetourConceptionMur;
 
 		ofxPanel guiCreationMurByParameters;
 		ofxButton newLine,saveNew2dWall, exitCreationByParameters, orientationLine;
@@ -74,6 +81,9 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel affichageMur;
 		ofxButton retouraeditionligne, importerimg;
+
+		ofxPanel materiauLumiere;
+		ofxFloatSlider hDir, absDir, OrdDir, hSpot, absSpot, ordSport;
 
 		//upload Image
 
@@ -158,6 +168,11 @@ class ofApp : public ofBaseApp{
 		void buttonretouraedition();
 		void buttonimportimg();
 		void exportimg();
+
+
+		void creationparBezier();
+		bool creationBezier = false;
+		vector<ofVec2f> bezier;
 
 		//camera
 		//ofEasyCam cam;

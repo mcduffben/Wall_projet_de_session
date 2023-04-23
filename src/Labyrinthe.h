@@ -82,6 +82,18 @@ public:
 	void unselect_all();
 	bool selectCheckerSingle(bool single,int x, int y);
 
+
+	//bezier
+	ofPolyline courbe;
+	int line_resolution;
+	float radius;
+	void drawBezier(vector<ofVec2f> vec);
+	ofVec3f position;
+	vector<ofPolyline> allcurvs;
+	vector<ofVec2f> sphereBezier;
+	void addsphereBezier(ofVec2f point);
+	//fin bezier
+
 	ofVec2f po;
 	vector<LineDTO> mathPreview;
 	//LineDTO preview;
