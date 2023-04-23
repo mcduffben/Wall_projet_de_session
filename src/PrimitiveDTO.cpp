@@ -1,6 +1,13 @@
 #include "PrimitiveDTO.h"
 
 void PrimitiveDTO::setup() {
+
+	setupLight();
+	materialChooser = 1;
+
+	oscillation_frequency_light = 7500.0f;
+	oscillation_amplitude_light = 45.0;
+
 	navCe = 0;
 	navCy = 0;
 	navF = 0;
@@ -96,6 +103,26 @@ float PrimitiveDTO::oscillate(float time, float frequency, float amplitude)
 	return sinf(time * 2.0f * PI / frequency) * amplitude;
 }
 
+void PrimitiveDTO::update3d() {
+	ofPushMatrix();
+
+	orientation_directional.makeRotate(int(ofGetElapsedTimeMillis() * 0.1f) % 360, 0, 1, 0);
+	light_directional.setPosition(0, 0, 500);
+	light_directional.setOrientation(orientation_directional);
+
+	light_point.setPosition(ofGetMouseX(), ofGetMouseY(), 200);
+
+	oscillation_light = oscillate_light(ofGetElapsedTimeMillis(), oscillation_frequency_light, oscillation_amplitude_light);
+
+	orientation_spot.makeRotate(30.0f, ofVec3f(1, 0, 0), oscillation_light, ofVec3f(0, 1, 0), 0.0f, ofVec3f(0, 0, 1));
+
+	light_spot.setOrientation(orientation_spot);
+
+	light_spot.setPosition(0, - 75.0f, 200);
+
+	ofPopMatrix();
+}
+
 void PrimitiveDTO::draw() {
 
 	for (int i = 0; i < cerclesManager[navCe].size(); i++) {
@@ -114,6 +141,22 @@ void PrimitiveDTO::draw() {
 }
 
 void PrimitiveDTO::draw3d() {
+	ofFill();
+
+	ofEnableDepthTest();
+
+	ofPushMatrix();
+	light_point.draw();
+	light_directional.draw();
+	light_spot.draw();
+	ofPopMatrix();
+
+	ofEnableLighting();
+	ofSetGlobalAmbientColor(light_ambient);
+
+	light_point.enable();
+	light_directional.enable();
+	light_spot.enable();
 
 	//activation des illuminations
 
@@ -139,11 +182,15 @@ void PrimitiveDTO::draw3d() {
 				shader_blinn_phong.setUniform3f("color_diffuse", c.getNormalized().r, c.getNormalized().g, c.getNormalized().b);
 			}
 			
-			// dessiner un cube
-			ofEnableDepthTest();
-			//ofSetColor(cerclesManager[navCe][i].couleur);
+			if (materialChooser == 1)material1.begin();
+			if (materialChooser == 2)material2.begin();
+			if (materialChooser == 3)material3.begin();
+			ofSetColor(cerclesManager[navCe][i].couleur);
 			ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
-			ofDisableDepthTest();
+			if (materialChooser == 1)material1.end();
+			if (materialChooser == 2)material2.end();
+			if (materialChooser == 3)material3.end();
+			
 			if (gouraud)
 				shader_gouraud.end();
 			else if (phong)
@@ -152,8 +199,14 @@ void PrimitiveDTO::draw3d() {
 				shader_blinn_phong.end();
 		}
 		else {
+			if (materialChooser == 1)material1.begin();
+			if (materialChooser == 2)material2.begin();
+			if (materialChooser == 3)material3.begin();
 			ofSetColor(cerclesManager[navCe][i].couleur);
 			ofDrawSphere(cerclesManager[navCe][i].position, cerclesManager[navCe][i].rayon);
+			if (materialChooser == 1)material1.end();
+			if (materialChooser == 2)material2.end();
+			if (materialChooser == 3)material3.end();
 		}
 
 	}
@@ -183,8 +236,14 @@ void PrimitiveDTO::draw3d() {
 			// dessiner un cube
 			ofEnableDepthTest();
 
-		//ofSetColor(cylindresManager[navCy][i].couleur);
-		ofDrawCylinder(cylindresManager[navCy][i].position, cylindresManager[navCy][i].rayon, cylindresManager[navCy][i].height);
+			if (materialChooser == 1)material1.begin();
+			if (materialChooser == 2)material2.begin();
+			if (materialChooser == 3)material3.begin();
+			ofSetColor(cylindresManager[navCy][i].couleur);
+			ofDrawCylinder(cylindresManager[navCy][i].position, cylindresManager[navCy][i].rayon, cylindresManager[navCy][i].height);
+			if (materialChooser == 1)material1.end();
+			if (materialChooser == 2)material2.end();
+			if (materialChooser == 3)material3.end();
 		ofDisableDepthTest();
 		if (gouraud)
 			shader_gouraud.end();
@@ -194,8 +253,14 @@ void PrimitiveDTO::draw3d() {
 			shader_blinn_phong.end();
 		}
 		else {
+			if (materialChooser == 1)material1.begin();
+			if (materialChooser == 2)material2.begin();
+			if (materialChooser == 3)material3.begin();
 			ofSetColor(cylindresManager[navCy][i].couleur);
 			ofDrawCylinder(cylindresManager[navCy][i].position, cylindresManager[navCy][i].rayon, cylindresManager[navCy][i].height);
+			if (materialChooser == 1)material1.end();
+			if (materialChooser == 2)material2.end();
+			if (materialChooser == 3)material3.end();
 		}
 	}
 
@@ -215,6 +280,11 @@ void PrimitiveDTO::draw3d() {
 
 
 	//draw menu illumination
+
+	ofDisableLighting();
+	ofDisableDepthTest();
+	ofNoFill();
+
 }
 
 void PrimitiveDTO::undoCe() {
@@ -325,4 +395,54 @@ void PrimitiveDTO::cleanIrrelevantHistorique() {
 		int p = historique.size();
 		historique.erase(historique.begin() + p - 1);
 	}
+}
+
+void PrimitiveDTO::setupLight() {
+
+	// configurer le premier matériau
+	material1.setAmbientColor(ofColor(63, 63, 63));
+	material1.setDiffuseColor(ofColor(127, 0, 0));
+	material1.setEmissiveColor(ofColor(31, 0, 0));
+	material1.setSpecularColor(ofColor(127, 127, 127));
+	material1.setShininess(16.0f);
+
+	// configurer le deuxième matériau
+	material2.setAmbientColor(ofColor(63, 63, 63));
+	material2.setDiffuseColor(ofColor(191, 63, 0));
+	material2.setEmissiveColor(ofColor(0, 31, 0));
+	material2.setSpecularColor(ofColor(255, 255, 64));
+	material2.setShininess(8.0f);
+
+	// configurer le troisième matériau
+	material3.setAmbientColor(ofColor(63, 63, 63));
+	material3.setDiffuseColor(ofColor(63, 0, 63));
+	material3.setEmissiveColor(ofColor(0, 0, 31));
+	material3.setSpecularColor(ofColor(191, 191, 191));
+	material3.setShininess(8.0f);
+
+	// configurer la lumière ambiante
+	light_ambient.set(127, 127, 127);
+
+	// configurer la lumière directionnelle
+	light_directional.setDiffuseColor(ofColor(31, 255, 31));
+	light_directional.setSpecularColor(ofColor(191, 191, 191));
+	light_directional.setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
+	light_directional.setDirectional();
+
+	// configurer la lumière ponctuelle
+	light_point.setDiffuseColor(ofColor(255, 255, 255));
+	light_point.setSpecularColor(ofColor(191, 191, 191));
+	light_point.setPointLight();
+
+	// configurer la lumière projecteur
+	light_spot.setDiffuseColor(ofColor(191, 191, 191));
+	light_spot.setSpecularColor(ofColor(191, 191, 191));
+	light_spot.setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
+	light_spot.setSpotConcentration(2);
+	light_spot.setSpotlightCutOff(30);
+	light_spot.setSpotlight();
+}
+
+float PrimitiveDTO::oscillate_light(float time, float frequency, float amplitude) {
+	return sinf(time * 2.0f * PI / frequency) * amplitude;
 }

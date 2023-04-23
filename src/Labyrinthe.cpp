@@ -24,6 +24,7 @@ void bezier_cubic(
 }
 
 void Labyrinthe::setup() {
+
 	epaisseur = 1000;
 	hauteur = 1000;
 	echelle = 5;
@@ -92,6 +93,7 @@ void Labyrinthe::update(ofColor color, ofColor back, float epais, ofColor dessin
 }
 
 void Labyrinthe::draw(ofColor color, ofColor back, float epais, ofColor dessin) {
+
 	ofSetLineWidth(epais);
 	ofSetColor(dessin);
 	ofFill();

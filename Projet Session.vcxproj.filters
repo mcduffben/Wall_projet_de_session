@@ -46,6 +46,9 @@
 		<ClCompile Include="src\renderer.cpp">
 			<Filter>src</Filter>
 		</ClCompile>
+		<ClCompile Include="src\TesselationRender.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
 		<ClCompile Include="..\of_v0.11.2_vs2017_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp">
 			<Filter>addons\ofxAssimpModelLoader\src</Filter>
 		</ClCompile>
@@ -168,6 +171,9 @@
 			<Filter>src</Filter>
 		</ClInclude>
 		<ClInclude Include="src\renderer.h">
+			<Filter>src</Filter>
+		</ClInclude>
+		<ClInclude Include="src\TesselationRender.h">
 			<Filter>src</Filter>
 		</ClInclude>
 		<ClInclude Include="..\of_v0.11.2_vs2017_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h">

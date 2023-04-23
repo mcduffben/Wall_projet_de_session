@@ -4,6 +4,10 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	camTemporaire.setPosition(0, 0, 0);
+
+	tessRender.setup();
+
+
 	myfont.load("times-new-roman.ttf", 32);
 	ofSetBackgroundColor(229, 235, 231);
 	ofDisableArbTex();
@@ -69,7 +73,7 @@ void ofApp::setupUi() {
 	boutonJeu.addListener(this, &ofApp::button_pressed_jeu);
 	guiPrincipal.add(boutonConception.setup("Conception"));
 	boutonConception.addListener(this, &ofApp::button_pressed_conception);
-	guiPrincipal.add(boutonOptions.setup("Options"));
+	guiPrincipal.add(boutonOptions.setup("Shader de Tesselation"));
 	boutonOptions.addListener(this, &ofApp::button_pressed_options);
 	guiPrincipal.add(button.setup("Upload"));
 	button.addListener(this, &ofApp::button_pressed);
@@ -108,7 +112,7 @@ void ofApp::setupUi() {
 	boutonExitConception.addListener(this, &ofApp::button_pressed_exit);
 
 	//Setup du UI Options
-	guiOptions.setup("Options");
+	guiOptions.setup("Shader de tesselation");
 	boutonExitOptions.setup("Retour");
 	boutonExitOptions.addListener(this, &ofApp::button_pressed_exit);
 	guiOptions.add(&boutonExitOptions);
@@ -174,7 +178,7 @@ void ofApp::setupUi() {
 	//Setup du UI edition ligne 2d
 	guiEditionLigne.setup("Edition d'une ligne");
 	guiEditionLigne.add(posxline.setup("Position x", 800, 0, 2000));
-	guiEditionLigne.add(posyline.setup("Position y", 800, 0, 2000));
+	guiEditionLigne.add(posyline.setup("Position y",400, 0, 2000));
 	guiEditionLigne.add(voirMur.setup("Affichier Mur"));
 	guiEditionLigne.add(button7.setup("Upload"));
 	button7.addListener(this, &ofApp::button_pressed);
@@ -249,6 +253,10 @@ void ofApp::setupUi() {
 //--------------------------------------------------------------
 void ofApp::update() {
 
+	if (vue == 3)prime.update3d();
+
+	if (vue == 4)tessRender.update();
+
 	//cam.setPosition(x_index, y_index, z_index);
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, slider_stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, slider_stroke_weight,color_dessin);
@@ -257,140 +265,128 @@ void ofApp::update() {
 	if(vue==2)labyrinthe.update(color_picker_stroke, background_color, stroke_weight, color_dessin);
 	if (vue == 3)labyrinthe.update3d(color_picker_stroke, background_color, stroke_weight, color_dessin);
 
-	ofBackground(color_picker_background);
-	if (timeDeFrame > 0)
-	{
-		ps->addParticle();
-		ps->update();
-	}
+	if(vue==2)ofBackground(color_picker_background);
 	
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	ofNoFill();
-	renderer.draw();
-	//camera.begin();
-	if (vue == 1){
-		labyrinthe.drawWall();
-		
+	if (vue == 4)
+	{
+		drawTess();
 	}
-	else if (vue == 2) {
-		labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
+		ofNoFill();
+		renderer.draw();
+		//camera.begin();
+		if (vue == 1) {
+			labyrinthe.drawWall();
+
 		}
+		else if (vue == 2) {
+			labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
+		}
+
+		if (vue == 3) {
+			cam.begin();
+
+			//prime se trouve dans PrimivitiveDTO .h/.cpp
+			//toutes les objets 3d sont affichées ici
+			prime.draw3d();
+			//fin des objets 3d
+
+
+			labyrinthe.draw3d(color_picker_stroke, background_color, stroke_weight, color_dessin);
+
+
+			//Ajout d'objet 3d
+			if (drawSphere) {
+				ofSetColor(colObstacle);
+				ofDrawSphere(absObstacle, ordObstacle, zObstacle, radObstacle);
+			}
+			if (drawCyl) {
+				ofSetColor(colObstacle);
+				ofDrawCylinder(absObstacle, ordObstacle, zObstacle, radObstacle, heightCylinder);
+			}
+
+			if (drawMod) {
+				ofPushMatrix();
+				ofRotateXDeg(degXmodel);
+				ofRotateYDeg(degYmodel);
+				ofSetColor(colObstacle);
+				transitoryModel.setScale(scaleModel, scaleModel, scaleModel);
+				transitoryModel.drawFaces();
+				ofPopMatrix();
+			}
+			//Fin objet 3d
+			// 
+			//camTemporaire.end();
+			cam.end();
+		}
+		drawUi();
+
+
+		//cam.begin();
+		//Ajout d'une nouvelle ligne par param�tres
+
+		//Ajout d'une nouvelle ligne par paramètres
+		if (newLineNumber > 0) {
+			if (horizontal) {
+				xLength = lengthLine;
+				yLength = 0;
+			}
+			else {
+				xLength = 0;
+				yLength = lengthLine;
+			}
+			ofSetColor(0, 0, 175);
+			ofDrawLine({ posLine->x - xLength, posLine->y - yLength }, { posLine->x + xLength, posLine->y + yLength });
+		}
+		ofSetColor(255, 255, 255);
+		//fin de la fonction
+
+		//Edition de lignes
+		if (modifyingOneLine) {
+			for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
+				if (labyrinthe.murs2Dbasique[i].selected) {
+					labyrinthe.murs2Dbasique[i].pinit.x = posxline;
+					labyrinthe.murs2Dbasique[i].pfinal.x = posxline + labyrinthe.murs2Dbasique[i].diffx;
+					labyrinthe.murs2Dbasique[i].pinit.y = posyline;
+					labyrinthe.murs2Dbasique[i].pfinal.y = posyline + labyrinthe.murs2Dbasique[i].diffy;
+				}
+			}
+		}
+		if (modifyingLines && xlines != oldfloatsliderx) {
+			for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
+				if (labyrinthe.murs2Dbasique[i].selected) {
+					labyrinthe.murs2Dbasique[i].pinit.x += xlines;
+					labyrinthe.murs2Dbasique[i].pfinal.x += xlines;
+				}
+			}
+		}
+		if (modifyingLines && ylines != oldfloatslidery) {
+			for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
+				if (labyrinthe.murs2Dbasique[i].selected) {
+					labyrinthe.murs2Dbasique[i].pinit.y += ylines;
+					labyrinthe.murs2Dbasique[i].pfinal.y += ylines;
+				}
+			}
+		}
+		oldfloatsliderx = xlines;
+		oldfloatslidery = ylines;
+		//Edition de lignes finie
+
+
+		//Le curseur est dessin� � la fin pour qu'il soit devant le UI
+
+
+		//Le curseur est dessiné à la fin pour qu'il soit devant le UI
+
+		//ofBackground(stroke_color);
+
+		//cam.end();
+		renderer.drawCursor(listeCurseurs[menu]);
+		//ofDisableDepthTest();
 	
-	if (vue == 3) {
-		cam.begin();
-		labyrinthe.draw3d(color_picker_stroke, background_color,stroke_weight,color_dessin);
-
-
-
-		//prime se trouve dans PrimivitiveDTO .h/.cpp
-		//toutes les objets 3d sont affichées ici
-     	prime.draw3d();
-		//fin des objets 3d
-
-		
-		player.enableColors();
-		ofSetColor(238, 75, 43);
-		
-		player.drawFaces();
-		if (timeDeFrame > 0)
-		{
-			timeDeFrame--;
-			ps->display();
-
-		}
-		
-		//Ajout d'objet 3d
-		if (drawSphere) {
-			ofSetColor(colObstacle);
-			ofDrawSphere(absObstacle, ordObstacle, zObstacle, radObstacle);
-		}
-		if (drawCyl) {
-			ofSetColor(colObstacle);
-			ofDrawCylinder(absObstacle, ordObstacle, zObstacle, radObstacle, heightCylinder);
-		}
-		
-		if (drawMod) {
-			ofPushMatrix();
-			ofRotateXDeg(degXmodel);
-			ofRotateYDeg(degYmodel);
-			ofSetColor(colObstacle);
-			transitoryModel.setScale(scaleModel, scaleModel, scaleModel);
-			transitoryModel.drawFaces();
-			ofPopMatrix();
-		}
-		//Fin objet 3d
-		// 
-		//camTemporaire.end();
-		cam.end();
-	}
-	drawUi();
-
-
-	//cam.begin();
-	//Ajout d'une nouvelle ligne par param�tres
-
-	//Ajout d'une nouvelle ligne par paramètres
-	if (newLineNumber > 0) {
-		if (horizontal) {
-			xLength = lengthLine;
-			yLength = 0;
-		}
-		else {
-			xLength = 0;
-			yLength = lengthLine;
-		}
-		ofSetColor(0, 0, 175);
-		ofDrawLine({ posLine->x - xLength, posLine->y - yLength }, { posLine->x + xLength, posLine->y + yLength });
-	}
-	ofSetColor(255, 255, 255);
-	//fin de la fonction
-
-	//Edition de lignes
-	if (modifyingOneLine) {
-		for (int i = 0; i < labyrinthe.murs2Dbasique.size();i++) {
-			if (labyrinthe.murs2Dbasique[i].selected) {
-				labyrinthe.murs2Dbasique[i].pinit.x = posxline;
-				labyrinthe.murs2Dbasique[i].pfinal.x = posxline+ labyrinthe.murs2Dbasique[i].diffx;
-				labyrinthe.murs2Dbasique[i].pinit.y = posyline;
-				labyrinthe.murs2Dbasique[i].pfinal.y = posyline + labyrinthe.murs2Dbasique[i].diffy;
-			}
-		}
-	}
-	if (modifyingLines && xlines!=oldfloatsliderx) {
-		for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
-			if (labyrinthe.murs2Dbasique[i].selected) {
-				labyrinthe.murs2Dbasique[i].pinit.x += xlines;
-				labyrinthe.murs2Dbasique[i].pfinal.x += xlines;
-			}
-		}
-	}
-	if (modifyingLines && ylines != oldfloatslidery) {
-		for (int i = 0; i < labyrinthe.murs2Dbasique.size(); i++) {
-			if (labyrinthe.murs2Dbasique[i].selected) {
-				labyrinthe.murs2Dbasique[i].pinit.y += ylines;
-				labyrinthe.murs2Dbasique[i].pfinal.y += ylines;
-			}
-		}
-	}
-	oldfloatsliderx = xlines;
-	oldfloatslidery = ylines;
-	//Edition de lignes finie
-
-
-	//Le curseur est dessin� � la fin pour qu'il soit devant le UI
-	
-
-	//Le curseur est dessiné à la fin pour qu'il soit devant le UI
-	renderer.drawCursor(listeCurseurs[menu]);
-
-	//ofBackground(stroke_color);
-
-	//cam.end();
-	renderer.drawCursor(listeCurseurs[menu]);
-	//ofDisableDepthTest();
 }
 
 //Le UI est dessiné, selon le menu désiré
@@ -437,6 +433,22 @@ void ofApp::drawUi() {
 void ofApp::keyPressed(int key) {
 	switch (key)
 	{
+	case 49: // key 1
+		prime.materialChooser = 1;
+		break;
+
+	case 50: // key 2
+		prime.materialChooser = 2;
+		break;
+
+	case 51: // key 3
+		prime.materialChooser = 3;
+		break;
+
+	case 52: // key 4
+		prime.materialChooser = 0;
+		break;
+
 		case OF_KEY_LEFT: // touche ←
 			player.setPosition(player.getPosition().x-5, player.getPosition().y, player.getPosition().z);
 			break;
@@ -580,6 +592,7 @@ void ofApp::button_pressed_conception()
 void ofApp::button_pressed_options()
 {
 	menu = 3;
+	vue = 4;
 }
 
 //Bouton Exit
@@ -892,6 +905,48 @@ void ofApp::drawVector(ofPoint v, ofPoint loc, float scayl) {
 
 
 	ofPopMatrix();
+
+}
+
+
+void ofApp::setupTesselation() {
+
+	ofDisableArbTex();
+
+	ofFboSettings settings;
+	settings.internalformat = GL_RGB32F;
+	settings.width = ofGetWidth();
+	settings.height = ofGetHeight();
+	settings.useDepth = true;
+	settings.depthStencilAsTexture = true;
+
+	fbo.allocate(settings);
+
+	fboTess.begin();
+	ofClear(0, 0, 0);
+
+	// No need to clear the alpha channel since I'm using the GL_RGB32F format
+	// ofClearAlpha();
+	fboTess.end();
+
+	parameters.setName("Settings");
+
+	parameters.add(tessRender.parameters[0]);
+
+	guiTesslation.setup(parameters);
+}
+void ofApp::drawTess() {
+
+
+	fboTess.begin();
+
+	ofClear(0);
+
+	tessRender.draw();
+	fboTess.end();
+
+	guiTesslation.draw();
+
 
 }
 

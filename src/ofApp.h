@@ -7,13 +7,19 @@
 #include "ofxAssimpModelLoader.h"
 #include <particleSystem.h>
 #include <array>
+#include "TesselationRender.h"
 //#include "ofxSkyBox.h"
 
 class ofApp : public ofBaseApp{
 
 	public:
 		
-		//ofxSkyBox skybox;
+		ofFbo fboTess;
+		ofxPanel guiTesslation;
+		ofParameterGroup parameters;
+		void setupTesselation();
+		void drawTess();
+		TesselationRender tessRender;
 
 		Renderer renderer;
 		Labyrinthe labyrinthe;
@@ -73,6 +79,9 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel affichageMur;
 		ofxButton retouraeditionligne, importerimg;
+
+		ofxPanel materiauLumiere;
+		ofxFloatSlider hDir, absDir, OrdDir, hSpot, absSpot, ordSport;
 
 		//upload Image
 
