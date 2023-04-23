@@ -180,8 +180,6 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="pbr.cpp" />
-    <ClCompile Include="src\effecdeParticule.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\CercleDTO.cpp" />
@@ -189,9 +187,8 @@
     <ClCompile Include="src\Labyrinthe.cpp" />
     <ClCompile Include="src\LineDTO.cpp" />
     <ClCompile Include="src\ModelDTO.cpp" />
-    <ClCompile Include="src\ofxCubeMap.cpp" />
-    <ClCompile Include="src\ofxSkyBox.cpp" />
-    <ClCompile Include="src\particleSystem.cpp" />
+    <ClCompile Include="src\ofxSimpleSpline.cpp" />
+    <ClCompile Include="src\pbr.cpp" />
     <ClCompile Include="src\PrimitiveDTO.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
@@ -211,17 +208,14 @@
     <ClCompile Include="src\TesselationRender.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pbr.h" />
-    <ClInclude Include="src\effecdeParticule.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\CercleDTO.h" />
     <ClInclude Include="src\Cylindre.h" />
     <ClInclude Include="src\Labyrinthe.h" />
     <ClInclude Include="src\LineDTO.h" />
     <ClInclude Include="src\ModelDTO.h" />
-    <ClInclude Include="src\ofxCubeMap.h" />
-    <ClInclude Include="src\ofxSkyBox.h" />
-    <ClInclude Include="src\particleSystem.h" />
+    <ClInclude Include="src\ofxSimpleSpline.h" />
+    <ClInclude Include="src\pbr.h" />
     <ClInclude Include="src\PrimitiveDTO.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
