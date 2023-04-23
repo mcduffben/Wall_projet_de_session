@@ -49,7 +49,30 @@ public:
 
 	void cleanIrrelevantHistorique();
 
+	//lightning related
 
+	ofColor light_ambient;
+
+	ofLight light_directional;
+	ofLight light_point;
+	ofLight light_spot;
+
+	ofMaterial material1;
+	ofMaterial material2;
+	ofMaterial material3;
+
+	ofQuaternion orientation_directional;
+	ofQuaternion orientation_spot;
+
+	float oscillation_light;
+	float oscillation_frequency_light;
+	float oscillation_amplitude_light;
+	int materialChooser;
+
+
+	float hauteur;
+
+	//end lightning
 
 	//declarer tout ce qui est en lien avec illumination
 	ofxGuiGroup illimunation;
@@ -97,4 +120,7 @@ public:
 	ofTexture texture;
 	
 
+	void setupLight();
+	void update3d();
+	float oscillate_light(float time, float frequency, float amplitude);
 };
