@@ -76,22 +76,13 @@
     <ClCompile Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxToggle.cpp">
       <Filter>addons\ofxGui\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\effecdeParticule.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\particleSystem.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="pbr.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ofxSkyBox.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ofxCubeMap.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\TesselationRender.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pbr.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ofxSimpleSpline.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -338,22 +329,13 @@
     <ClInclude Include="..\..\..\Desktop\OF\of_v0.11.2_vs2017_release\addons\ofxGui\src\ofxToggle.h">
       <Filter>addons\ofxGui\src</Filter>
     </ClInclude>
-    <ClInclude Include="src\effecdeParticule.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\particleSystem.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="pbr.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ofxSkyBox.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ofxCubeMap.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\TesselationRender.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pbr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofxSimpleSpline.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

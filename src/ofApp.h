@@ -7,7 +7,6 @@
 #include "ofxAssimpModelLoader.h"
 #include <array>
 #include "TesselationRender.h"
-//#include "ofxSkyBox.h"
 #include "pbr.h"
 #include "ofxDelaunay.h"
 
@@ -270,5 +269,35 @@ class ofApp : public ofBaseApp{
 
 		void reset();
 		void menu_pbr();
+
+		//REFLECTION ET REFRACTION
+
+		ofParameter<bool> lancer_rayon = false;
+		
+		ofLight areaLight;
+		ofPlanePrimitive plane;
+		//ofEasyCam camera;
+		ofMaterial materialPlane;
+		ofMesh logoMesh;
+		ofMaterial materialMesh;
+
+		int mode = 0;
+		float orbitSpeed = 0.0;
+		float highwaySpeed = 0.;
+
+		float bump = 0.;
+		float bumpHeight = 50.0;
+
+		ofMaterial boxMaterial;
+		ofMaterial bgMaterial;
+		ofMaterial sphereMaterial;
+
+		ofColor light_ambient;
+
+		ofLight light_directional;
+		ofLight light_point;
+		ofLight light_spot;
+
+		ofBoxPrimitive box;
 
 };
