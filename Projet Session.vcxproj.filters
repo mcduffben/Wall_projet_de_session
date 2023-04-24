@@ -85,6 +85,12 @@
     <ClCompile Include="src\ofxSimpleSpline.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ofxDelaunay.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Delaunay.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -336,6 +342,12 @@
       <Filter>addons\ofxGui\src</Filter>
     </ClInclude>
     <ClInclude Include="src\ofxSimpleSpline.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofxDelaunay.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Delaunay.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

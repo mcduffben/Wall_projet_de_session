@@ -26,7 +26,7 @@ void ofApp::setup(){
 	menu = 0;
 	vue = 2;
 	//La liste des curseurs pour chaque menu
-	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5,0,0,0,0,0 };
+	listeCurseurs = { 0, 1, 2, 3, 4, 4, 4, 5,0,0,0,0,0,0 };
 
 	//Setup de variables
 	freeDraw, wantsToSelect, hasSelectedSmthing, wantsToSelectMultiple, hasSelectedThings = false;
@@ -68,6 +68,8 @@ void ofApp::setupUi() {
 	boutonConception.addListener(this, &ofApp::button_pressed_conception);
 	guiPrincipal.add(boutonOptions.setup("Shader de Tesselation"));
 	boutonOptions.addListener(this, &ofApp::button_pressed_options);
+	guiPrincipal.add(boutonDelaunay.setup("Triangulation de Delaunay"));
+	boutonDelaunay.addListener(this, &ofApp::button_pressed_delaunay);
 	guiPrincipal.add(button.setup("Upload"));
 	button.addListener(this, &ofApp::button_pressed);
 	
@@ -154,6 +156,11 @@ void ofApp::setupUi() {
 	boutonExitOptions.setup("Retour");
 	boutonExitOptions.addListener(this, &ofApp::button_pressed_exit);
 	guiOptions.add(&boutonExitOptions);
+
+	guiDelaunay.setup("Triangulation de Delaunay");
+	guiDelaunay.add(boutonExitDelaunay.setup("Retour"));
+	boutonExitDelaunay.addListener(this, &ofApp::button_pressed_exit);
+	
 
 	//Setup du UI Conception Mur basique
 	guiConceptionMurBasique.setup("Conception de murs basiques");
@@ -375,6 +382,12 @@ void ofApp::draw() {
 		pbr_active.set(false);
 		drawTess();
 	}
+
+	if (vue == 5) {
+		ofNoFill();
+		triangulation.draw();
+		ofFill();
+	}
 	
 	
 	//camera.begin();
@@ -385,7 +398,7 @@ void ofApp::draw() {
 	}
 	else if (vue == 2) {
 		
-		labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
+		if(renderlabyrinthe3d)labyrinthe.draw(color_picker_stroke, background_color, stroke_weight, color_dessin);
 
 		ofNoFill();
 		renderer.draw();
@@ -549,6 +562,9 @@ void ofApp::drawUi() {
 	else if (menu == 11) {
 		affichageMur.draw();
 	}
+	else if (menu == 12) {
+		guiDelaunay.draw();
+	}
 }
 
 //--------------------------------------------------------------
@@ -638,6 +654,10 @@ void ofApp::keyPressed(int key) {
 		break;
 	}
 	}
+
+	if (vue == 5 && key == 'r') {
+		triangulation.reset();
+	}
 }
 //pbr
 
@@ -699,7 +719,7 @@ void ofApp::keyReleased(int key) {
 			break;
 
 		case 114: // touche r
-			reset();
+			if(vue!=5)reset();
 			ofLog() << "<reset renderer>";
 			break;
 
@@ -753,6 +773,10 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
+	if (vue == 5) {
+		triangulation.addPoint(ofPoint(x, y));
+		triangulation.triangulate();
+	}
 	if (freeDraw) {
 		labyrinthe.po.x = x;
 		labyrinthe.po.y = y;
@@ -1198,5 +1222,10 @@ void ofApp::drawTess() {
 	guiTesslation.draw();
 
 
+}
+
+void ofApp::button_pressed_delaunay() {
+	vue = 5;
+	menu = 12;
 }
 

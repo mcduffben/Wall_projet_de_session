@@ -9,11 +9,13 @@
 #include "TesselationRender.h"
 //#include "ofxSkyBox.h"
 #include "pbr.h"
+#include "ofxDelaunay.h"
 
 class ofApp : public ofBaseApp{
 
 	public:
 		
+		ofxDelaunay triangulation;
 		ofFbo fboTess;
 		ofxPanel guiTesslation;
 		ofParameterGroup parameters;
@@ -40,7 +42,7 @@ class ofApp : public ofBaseApp{
 		int oldfloatsliderx,oldfloatslidery,timeDeFrame;
 
 		ofxPanel guiPrincipal;
-		ofxButton boutonJeu, boutonConception,boutonOptions;
+		ofxButton boutonJeu, boutonConception,boutonOptions, boutonDelaunay;
 
 		ofxPanel guiJeu;
 		ofxButton boutonExitJeu, boutonCreationObstacle, boutonexport;
@@ -50,6 +52,10 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel guiOptions;
 		ofxButton boutonExitOptions;
+
+		ofxPanel guiDelaunay;
+		ofxButton boutonExitDelaunay;
+		void button_pressed_delaunay();
 
 		ofxPanel guiConceptionMurBasique;
 		ofxButton boutonByParameters, boutonDessinLibre,boutonBezier, boutonRetourConceptionMur;
